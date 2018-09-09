@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
             \Laravel\Passport\Console\KeysCommand::class,
         ]);
         
-        \Laravel\Passport\Passport::tokensExpireIn(Carbon::now()->addMinutes(10));
-        \Laravel\Passport\Passport::refreshTokensExpireIn(Carbon::now()->addDays(1));
+        \Laravel\Passport\Passport::tokensExpireIn(\Carbon\Carbon::now()->addMinutes(10));
+        \Laravel\Passport\Passport::refreshTokensExpireIn(\Carbon\Carbon::now()->addDays(1));
     }
 }
