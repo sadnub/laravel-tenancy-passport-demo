@@ -52,6 +52,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'fqdn' => 'required|unique:system.hostnames,fqdn'
         ]);
     }
 
@@ -62,7 +63,10 @@ class RegisterController extends Controller
      * @return \App\User
      */
     protected function create(array $data)
-    {
+    {   
+        //Create Tenant
+        $tenant = Tenant::create($data['fqdn']);
+        
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
