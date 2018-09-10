@@ -65,7 +65,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {   
         //Create Tenant
-        $tenant = Tenant::create($data['fqdn']);
+        Tenant::create($data['fqdn']);
         
         return User::create([
             'name' => $data['name'],
