@@ -145,7 +145,7 @@ return [
          * Abort application execution in case no hostname was identified. This will throw a
          * 404 not found in case the tenant hostname was not resolved.
          */
-        'abort-without-identified-hostname' => true,
+        'abort-without-identified-hostname' => false,
 
         /**
          * Time to cache hostnames in minutes. Set to false to disable.
@@ -159,7 +159,7 @@ return [
          * This will resolve issues with password reset mails etc using the
          * correct domain.
          */
-        'update-app-url' => false,
+        'update-app-url' => true,
     ],
     'db' => [
         /**
