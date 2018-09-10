@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::domain('www.itplog.com')->group(function () { 
+Route::domain('www.itplog.com', 'itplog.com')->group(function () { 
   
     // Landing Page Routes
     Route::get('/', function () {
