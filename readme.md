@@ -6,5 +6,7 @@
 Check out guide at
 https://medium.com/@sadnub/hyn-tenancy-5-2-and-laravel-passport-a0d11c5a08eb
 
-If you found my article or this repo helpful, please consider contributing so I can provide more helpful content.
-<a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/joshk"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a>
+# Contribution
+If you found my article or this repo useful, please consider contributing so I can provide more helpful content!
+
+<a href="https://www.buymeacoffee.com/joshk" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
