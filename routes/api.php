@@ -12,7 +12,7 @@
 |
 */
 
-Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
+Route::group(['middleware' => 'auth:api', 'prefix' => 'api/v1'], function () {
     
     Route::apiResource('tickets', 'API\TicketController');
 });

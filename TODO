@@ -1,0 +1,4 @@
+-Set Base URL for axios
+-Setup Vue Router
+-Setup Ticket components
+-Setup DB connection and env variables
