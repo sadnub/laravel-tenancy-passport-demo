@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Ticket;
 use App\Http\Resources\Ticket as TicketResource;
-use App\Requests\TicketRequest;
+use App\Http\Requests\TicketRequest;
 use App\Http\Controllers\Controller;
 
 class TicketController extends Controller
@@ -17,7 +17,7 @@ class TicketController extends Controller
     public function index()
     {
         //
-        return TicketResource::collection(User::all());
+        return TicketResource::collection(Ticket::all());
         
     }
 
@@ -59,7 +59,11 @@ class TicketController extends Controller
     {
         //
         
-        $ticket = $ticket->fill($request->all());
+        $ticket->title = $request->title;
+        $ticket->issue = $request->issue;
+        $ticket->contact = $request->contact;
+        $ticket->status = $request->status;
+        $ticket->save();
         
         return new TicketResource($ticket);
     }

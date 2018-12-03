@@ -15,10 +15,11 @@ class Ticket extends JsonResource
     public function toArray($request)
     {
         return [
-            'title' => $request->input('title'),
-            'contact' => $request->input('contact'),
-            'status' => $request->input('status'),
-            'issue' => $request->input('issue')
+            'id' => $this->id,
+            'title' => $this->title,
+            'contact' => $this->contact,
+            'status' => $this->status,
+            'issue' => $this->issue
             ];
     }
 }

@@ -1,19 +1,25 @@
 //Imports
 import Vue from 'vue'
-import App from './App'
+import VueRouter from 'vue-router'
+import Vuetify from 'vuetify'
+import App from '@/App'
+import routes from '@/routes.js'
+
+//Load Plugins
+Vue.use(VueRouter)
+Vue.use(Vuetify)
 
 //Configurations
 require('./config/axios.js')
 
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
 
-
+//Router configuration
+const router = new VueRouter({
+    routes 
+  })
 
 const app = new Vue({
     el: '#app',
-    render: h => h(App)
+    render: h => h(App),
+    router
 });

@@ -7,11 +7,15 @@ export default {
     },
 
     getTicket(id) {
-        return axios.get('tickets/'. id)
+        return axios.get('tickets/' + id)
+    },
+
+    addTicket(data) {
+        return axios.post('tickets', data)
     },
 
     editTicket(id, data) {
-        return axios.post('tickets/' . id, data)
+        return axios.put('tickets/' + id, data)
     },
 
     deleteTicket(id) {
