@@ -30,6 +30,7 @@ Route::domain('www.itplog.com')->group(function () {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index');
 
 // Authentication Web Routes
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

@@ -53,8 +53,9 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed'
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:6|confirmed',
+            'fqdn' => 'required|unique:system.hostnames'
         ]);
     }
     
@@ -66,14 +67,10 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-        //Validate FQDN and create tenant
-        Validator::make(['fqdn' => $request->input('fqdn')], [
-            'fqdn' => 'required|unique:system.hostnames'
-        ])->validate();
-        
-        Tenant::create($request->input('fqdn'));
         
         $this->validator($request->all())->validate();
+
+        Tenant::create($request->input('fqdn'));
 
         event(new Registered($user = $this->create($request->all())));
 
