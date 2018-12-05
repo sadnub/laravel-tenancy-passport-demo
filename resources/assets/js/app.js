@@ -9,10 +9,6 @@ import routes from '@/routes.js'
 Vue.use(VueRouter)
 Vue.use(Vuetify)
 
-//Configurations
-require('./config/axios.js')
-
-
 //Router configuration
 const router = new VueRouter({
     routes 
