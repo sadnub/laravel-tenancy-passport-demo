@@ -39317,41 +39317,53 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.dialog = true;
         },
         deleteItem: function deleteItem(item) {
-            var index = this.tickets.indexOf(item);
-            confirm('Are you sure you want to delete this item?') && this.tickets.splice(index, 1);
+            var _this2 = this;
+
+            if (confirm('Are you sure you want to delete this item?')) {
+
+                var index = this.tickets.indexOf(item);
+
+                __WEBPACK_IMPORTED_MODULE_0__api_ticket_js__["a" /* default */].deleteTicket(item.id).then(function () {
+                    _this2.tickets.splice(index, 1);
+                    _this2.notify('The ticket was deleted successfully', 'success');
+                }).catch(function (error) {
+                    console.error(error);
+                    _this2.notify('There was an error deleting the ticket.', 'error');
+                });
+            }
         },
         close: function close() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.dialog = false;
             setTimeout(function () {
-                _this2.ticket = Object.assign({}, _this2.defaults);
-                _this2.editedIndex = -1;
+                _this3.ticket = Object.assign({}, _this3.defaults);
+                _this3.editedIndex = -1;
             }, 300);
         },
         submit: function submit() {
-            var _this3 = this;
+            var _this4 = this;
 
             if (this.editedIndex > -1) {
                 __WEBPACK_IMPORTED_MODULE_0__api_ticket_js__["a" /* default */].editTicket(this.ticket.id, this.ticket).then(function (_ref2) {
                     var data = _ref2.data;
 
-                    Object.assign(_this3.tickets[_this3.editedIndex], _this3.ticket);
-                    _this3.notify('The ticket was modified successfully', 'success');
+                    Object.assign(_this4.tickets[_this4.editedIndex], _this4.ticket);
+                    _this4.notify('The ticket was modified successfully', 'success');
                 }).catch(function (response) {
                     console.error(response);
-                    _this3.notify('There was an error editting the ticket', 'error');
+                    _this4.notify('There was an error editting the ticket', 'error');
                 });
             } else {
 
                 __WEBPACK_IMPORTED_MODULE_0__api_ticket_js__["a" /* default */].addTicket(this.ticket).then(function (_ref3) {
                     var data = _ref3.data;
 
-                    tickets.push(data);
-                    _this3.notify('The ticket was added successfully', 'success');
+                    _this4.tickets.push(data);
+                    _this4.notify('The ticket was added successfully', 'success');
                 }).catch(function (response) {
                     console.error(response);
-                    _this3.notify('There was an error adding the ticket', 'error');
+                    _this4.notify('There was an error adding the ticket', 'error');
                 });
             }
 
@@ -39387,7 +39399,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return __WEBPACK_IMPORTED_MODULE_0__config_axios_js__["default"].put('tickets/' + id, data);
     },
     deleteTicket: function deleteTicket(id) {
-        return __WEBPACK_IMPORTED_MODULE_0__config_axios_js__["default"].delete('tickets/'.id);
+        return __WEBPACK_IMPORTED_MODULE_0__config_axios_js__["default"].delete('tickets/' + id);
     }
 });
 

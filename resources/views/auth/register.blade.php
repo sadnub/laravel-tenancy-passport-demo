@@ -38,7 +38,7 @@
                                 <v-text-field
                                 label="FQDN"
                                 name="fqdn"
-                                suffix=".app.itplog.com"
+                                suffix=".{{ env('TENANT_URL_BASE') }}"
                                 @if ($errors->has('fqdn'))
                                 error-messages="{{ $errors->first('fqdn') }}"
                                 @endif

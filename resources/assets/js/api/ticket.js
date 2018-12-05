@@ -19,6 +19,6 @@ export default {
     },
 
     deleteTicket(id) {
-        return axios.delete('tickets/' . id)
+        return axios.delete('tickets/' + id)
     }
 }

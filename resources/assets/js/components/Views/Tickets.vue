@@ -153,8 +153,23 @@ export default {
         },
 
         deleteItem (item) {
-            const index = this.tickets.indexOf(item)
-            confirm('Are you sure you want to delete this item?') && this.tickets.splice(index, 1)
+          if (confirm('Are you sure you want to delete this item?'))
+          {
+
+            let index = this.tickets.indexOf(item)
+
+            Api.deleteTicket(item.id)
+            .then(() => {
+              this.tickets.splice(index, 1)
+              this.notify('The ticket was deleted successfully', 'success')
+
+            })
+            .catch((error) => {
+              console.error(error)
+              this.notify('There was an error deleting the ticket.', 'error')
+            })
+            
+          }
         },
 
         close () {
@@ -181,7 +196,7 @@ export default {
 
                 Api.addTicket(this.ticket)
                 .then(({ data }) => {
-                    tickets.push(data)
+                    this.tickets.push(data)
                     this.notify('The ticket was added successfully', 'success')
                     
                 })

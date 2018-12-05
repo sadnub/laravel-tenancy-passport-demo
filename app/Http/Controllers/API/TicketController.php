@@ -77,7 +77,7 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         //
-        
-        return new TicketResource($ticket->delete());
+
+        return response()->json($ticket->delete(), 202);
     }
 }
