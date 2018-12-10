@@ -23,11 +23,26 @@ class TicketRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => 'required|string',
-            'contact' => 'required|string',
-            'status' => 'required|string',
-            'issue' => 'required|string'
-        ];
+
+        //Remove required from ticket updates
+        if ($this->route()->getName() === 'tickets.update')
+        {
+            return [
+                'title' => 'string',
+                'contact' => 'string',
+                'status' => 'string',
+                'issue' => 'string'
+            ];
+
+        } else 
+        {
+
+            return [
+                'title' => 'required|string',
+                'contact' => 'required|string',
+                'status' => 'required|string',
+                'issue' => 'required|string'
+            ];
+        }
     }
 }

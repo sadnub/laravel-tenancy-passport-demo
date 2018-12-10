@@ -59,11 +59,7 @@ class TicketController extends Controller
     {
         //
         
-        $ticket->title = $request->title;
-        $ticket->issue = $request->issue;
-        $ticket->contact = $request->contact;
-        $ticket->status = $request->status;
-        $ticket->save();
+        $ticket->fill($request->all());
         
         return new TicketResource($ticket);
     }

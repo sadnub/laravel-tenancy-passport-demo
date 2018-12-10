@@ -5,7 +5,7 @@
     <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
             <v-toolbar dark color="primary">
-                <v-toolbar-title>Reset Password</v-toolbar-title>
+                <v-toolbar-title>Reset Password - {{ env('APP_NAME') }}</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
                 <form method="POST" action="{{ route('password.request') }}" aria-label="{{ __('Reset Password') }}">
