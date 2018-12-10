@@ -67,6 +67,8 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
+
+        $request->merge(['fqdn' => $request->fqdn . '.' . env('TENANT_URL_BASE')]);
         
         $this->validator($request->all())->validate();
 

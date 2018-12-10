@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\User;
-use App\Notifications\TenantCreated;
 use Tests\TenantTestCase;
 
 class RegistrationTest extends TenantTestCase
