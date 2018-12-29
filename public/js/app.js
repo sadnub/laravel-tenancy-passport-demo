@@ -1818,7 +1818,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
   computed: {
     csrf_token: function csrf_token() {
       var token = document.head.querySelector('meta[name="csrf-token"]');
@@ -1920,7 +1929,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      name: '',
+      email: '',
+      fqdn: '',
+      password: '',
+      passsword_confirmation: ''
+    };
+  },
   computed: {
     csrf_token: function csrf_token() {
       var token = document.head.querySelector('meta[name="csrf-token"]');
@@ -1990,7 +2015,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      email: ''
+    };
+  },
   computed: {
     csrf_token: function csrf_token() {
       var token = document.head.querySelector('meta[name="csrf-token"]');
@@ -2074,8 +2105,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['token'],
+  data: function data() {
+    return {
+      email: '',
+      password: '',
+      passsword_confirmation: ''
+    };
+  },
   computed: {
     csrf_token: function csrf_token() {
       var token = document.head.querySelector('meta[name="csrf-token"]');
@@ -12495,6 +12536,13 @@ var render = function() {
                                 "error-messages": _vm.errors.collect("email"),
                                 label: "Email",
                                 name: "email"
+                              },
+                              model: {
+                                value: _vm.email,
+                                callback: function($$v) {
+                                  _vm.email = $$v
+                                },
+                                expression: "email"
                               }
                             })
                           ],
@@ -12527,7 +12575,15 @@ var render = function() {
                                   "password"
                                 ),
                                 label: "Password",
-                                name: "password"
+                                name: "password",
+                                type: "password"
+                              },
+                              model: {
+                                value: _vm.password,
+                                callback: function($$v) {
+                                  _vm.password = $$v
+                                },
+                                expression: "password"
                               }
                             })
                           ],
@@ -12634,6 +12690,13 @@ var render = function() {
                                 "error-messages": _vm.errors.collect("name"),
                                 label: "Name",
                                 name: "name"
+                              },
+                              model: {
+                                value: _vm.name,
+                                callback: function($$v) {
+                                  _vm.name = $$v
+                                },
+                                expression: "name"
                               }
                             })
                           ],
@@ -12665,6 +12728,13 @@ var render = function() {
                                 "error-messages": _vm.errors.collect("email"),
                                 label: "Email",
                                 name: "email"
+                              },
+                              model: {
+                                value: _vm.email,
+                                callback: function($$v) {
+                                  _vm.email = $$v
+                                },
+                                expression: "email"
                               }
                             })
                           ],
@@ -12697,6 +12767,13 @@ var render = function() {
                                 label: "FQDN",
                                 name: "fqdn",
                                 suffix: ".app.itplog.com"
+                              },
+                              model: {
+                                value: _vm.fqdn,
+                                callback: function($$v) {
+                                  _vm.fqdn = $$v
+                                },
+                                expression: "fqdn"
                               }
                             })
                           ],
@@ -12723,6 +12800,7 @@ var render = function() {
                                   expression: "'required|min:6'"
                                 }
                               ],
+                              ref: "password",
                               attrs: {
                                 "data-vv-name": "password",
                                 "error-messages": _vm.errors.collect(
@@ -12731,6 +12809,13 @@ var render = function() {
                                 label: "Password",
                                 name: "password",
                                 type: "password"
+                              },
+                              model: {
+                                value: _vm.password,
+                                callback: function($$v) {
+                                  _vm.password = $$v
+                                },
+                                expression: "password"
                               }
                             })
                           ],
@@ -12758,10 +12843,20 @@ var render = function() {
                                 }
                               ],
                               attrs: {
-                                "data-vv-as": "password",
+                                "data-vv-name": "password_confirmation",
+                                "error-messages": _vm.errors.collect(
+                                  "password_confirmation"
+                                ),
                                 label: "Password Confirm",
                                 name: "password_confirmation",
                                 type: "password"
+                              },
+                              model: {
+                                value: _vm.password_confirmation,
+                                callback: function($$v) {
+                                  _vm.password_confirmation = $$v
+                                },
+                                expression: "password_confirmation"
                               }
                             })
                           ],
@@ -12890,6 +12985,13 @@ var render = function() {
                                   "error-messages": _vm.errors.collect("email"),
                                   label: "Email",
                                   name: "email"
+                                },
+                                model: {
+                                  value: _vm.email,
+                                  callback: function($$v) {
+                                    _vm.email = $$v
+                                  },
+                                  expression: "email"
                                 }
                               })
                             ],
@@ -13002,6 +13104,13 @@ var render = function() {
                                 "error-messages": _vm.errors.collect("email"),
                                 label: "Email",
                                 name: "email"
+                              },
+                              model: {
+                                value: _vm.email,
+                                callback: function($$v) {
+                                  _vm.email = $$v
+                                },
+                                expression: "email"
                               }
                             })
                           ],
@@ -13036,6 +13145,13 @@ var render = function() {
                                 type: "password",
                                 label: "Password",
                                 name: "password"
+                              },
+                              model: {
+                                value: _vm.password,
+                                callback: function($$v) {
+                                  _vm.password = $$v
+                                },
+                                expression: "password"
                               }
                             })
                           ],
@@ -13067,6 +13183,13 @@ var render = function() {
                                 type: "password",
                                 label: "Password Confirmation",
                                 name: "password_confirmation"
+                              },
+                              model: {
+                                value: _vm.password_confirmation,
+                                callback: function($$v) {
+                                  _vm.password_confirmation = $$v
+                                },
+                                expression: "password_confirmation"
                               }
                             })
                           ],
@@ -51420,62 +51543,57 @@ __webpack_require__.r(__webpack_exports__);
 var host = window.location.host.toUpperCase();
 
 var routes = function routes() {
-  switch (host) {
-    case 'APP.ITPLOG.COM':
-      {
-        return [{
-          path: '/',
-          component: _components_Layouts_DashboardLayout_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
-          children: [{
-            path: 'dashboard',
-            name: 'dashboard',
-            component: _components_Views_Dashboard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
-          }, {
-            path: 'tickets',
-            name: 'dashbaord.tickets',
-            component: _components_Views_Tickets_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
-          }]
-        }, {
-          path: '/auth',
-          component: _components_Layouts_AuthLayout_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-          children: [{
-            path: '/login',
-            name: 'auth.login',
-            component: _components_Auth_Login_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
-          }, {
-            path: 'password/email',
-            name: 'auth.email',
-            component: _components_Auth_ResetEmail_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
-          }, {
-            path: 'password/reset/:token',
-            component: ResetPassword,
-            props: true
-          }]
-        }, {
-          path: '*',
-          component: _components_General_NotFound_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
-        }];
-      }
-
-    default:
-      {
-        return [{
-          path: '/',
-          name: 'landing.welcome',
-          component: _components_Landing_Welcome_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
-        }, {
-          path: '/auth',
-          component: _components_Layouts_AuthLayout_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-          children: [{
-            path: '/register',
-            name: 'landing.register',
-            component: _components_Auth_Register_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
-          }]
-        }, {
-          path: '*',
-          component: _components_General_NotFound_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
-        }];
-      }
+  //Test for portal routes
+  if (host.includes('APP.ITPLOG.COM')) {
+    return [{
+      path: '/',
+      component: _components_Layouts_DashboardLayout_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+      children: [{
+        path: 'dashboard',
+        name: 'dashboard',
+        component: _components_Views_Dashboard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }, {
+        path: 'tickets',
+        name: 'dashbaord.tickets',
+        component: _components_Views_Tickets_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+      }]
+    }, {
+      path: '/auth',
+      component: _components_Layouts_AuthLayout_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+      children: [{
+        path: '/login',
+        name: 'auth.login',
+        component: _components_Auth_Login_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+      }, {
+        path: 'password/email',
+        name: 'auth.email',
+        component: _components_Auth_ResetEmail_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+      }, {
+        path: 'password/reset/:token',
+        component: _components_Auth_ResetPassword_vue__WEBPACK_IMPORTED_MODULE_7__["default"],
+        props: true
+      }]
+    }, {
+      path: '*',
+      component: _components_General_NotFound_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
+    }]; //Fallback to landing page routes
+  } else {
+    return [{
+      path: '/',
+      name: 'landing.welcome',
+      component: _components_Landing_Welcome_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
+    }, {
+      path: '/auth',
+      component: _components_Layouts_AuthLayout_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+      children: [{
+        path: '/register',
+        name: 'landing.register',
+        component: _components_Auth_Register_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+      }]
+    }, {
+      path: '*',
+      component: _components_General_NotFound_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
+    }];
   }
 };
 

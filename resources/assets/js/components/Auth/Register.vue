@@ -12,6 +12,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="name"
                   v-validate="'required|max:255'"
                   data-vv-name="name"
                   :error-messages="errors.collect('name')"
@@ -22,6 +23,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="email"
                   v-validate="'required|email|max:255'"
                   data-vv-name="email"
                   :error-messages="errors.collect('email')"
@@ -32,6 +34,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="fqdn"
                   v-validate="'required|max:255'"
                   data-vv-name="fqdn"
                   :error-messages="errors.collect('fqdn')"
@@ -43,9 +46,11 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="password"
                   v-validate="'required|min:6'"
                   data-vv-name="password"
                   :error-messages="errors.collect('password')"
+                  ref="password"
                   label="Password"
                   name="password"
                   type="password"></v-text-field>
@@ -54,8 +59,10 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="password_confirmation"
                   v-validate="'required|confirmed:password'"
-                  data-vv-as="password"
+                  data-vv-name="password_confirmation"
+                  :error-messages="errors.collect('password_confirmation')"
                   label="Password Confirm"
                   name="password_confirmation"
                   type="password"></v-text-field>
@@ -73,6 +80,13 @@
 <script>
 
   export default {
+    data: () => ({
+      name: '',
+      email: '',
+      fqdn: '',
+      password: '',
+      passsword_confirmation: ''
+    }),
     computed: {
       csrf_token() {
         let token = document.head.querySelector('meta[name="csrf-token"]')

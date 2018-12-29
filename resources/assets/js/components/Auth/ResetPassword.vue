@@ -15,6 +15,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="email"
                   v-validate="'required|email|max:255'"
                   data-vv-name="email"
                   :error-messages="errors.collect('email')"
@@ -25,6 +26,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="password"
                   v-validate="'required|min:6'"
                   data-vv-name="password"
                   :error-messages="errors.collect('password')"
@@ -36,6 +38,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
+                  v-model="password_confirmation"
                   v-validate="'required|confirmed:password'"
                   data-vv-as="password"
                   type="password"
@@ -55,6 +58,11 @@
 <script>
   export default {
     props: ['token'],
+    data: () => ({
+      email: '',
+      password: '',
+      passsword_confirmation: ''
+    }),
     computed: {
       csrf_token() {
         let token = document.head.querySelector('meta[name="csrf-token"]')
