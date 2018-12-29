@@ -32,7 +32,8 @@
                   :error-messages="errors.collect('password')"
                   type="password"
                   label="Password"
-                  name="password"></v-text-field>
+                  name="password"
+                  type="password"></v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row>
@@ -43,7 +44,8 @@
                   data-vv-as="password"
                   type="password"
                   label="Password Confirmation"
-                  name="password_confirmation"></v-text-field>
+                  name="password_confirmation"
+                  type="password"></v-text-field>
               </v-flex>
             </v-layout>
 
