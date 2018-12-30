@@ -31,7 +31,8 @@
                 </v-flex>
               </v-layout>
 
-              <v-btn @click="validate">Send Reset Link</v-btn>
+              <v-btn color="primary" @click="validate">Send Reset Link</v-btn>
+              <router-link :to="{name: 'auth.login'}">Login</router-link>
             </form>
           </v-card-text>
         </v-card>

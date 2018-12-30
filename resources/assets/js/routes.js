@@ -34,8 +34,8 @@ const routes = () => {
 			{path: '/auth', component: AuthLayout,
 				children: [
 					{path: '/login', name: 'auth.login' ,component: Login},
-				    {path: 'password/email', name: 'auth.email', component: ResetEmail},
-				    {path: 'password/reset/:token', component: ResetPassword, props: true},
+				    {path: '/password/email', name: 'auth.email', component: ResetEmail},
+				    {path: '/password/reset/:token', component: ResetPassword, props: true},
 				]
 			},
 			{path: '*', component: NotFound}

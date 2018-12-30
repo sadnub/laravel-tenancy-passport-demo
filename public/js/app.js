@@ -1821,6 +1821,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1975,6 +1976,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -12593,9 +12595,20 @@ var render = function() {
                       1
                     ),
                     _vm._v(" "),
-                    _c("v-btn", { on: { click: _vm.validate } }, [
-                      _vm._v("Login")
-                    ])
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "primary" },
+                        on: { click: _vm.validate }
+                      },
+                      [_vm._v("Login")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "router-link",
+                      { attrs: { to: { name: "auth.email" } } },
+                      [_vm._v("Forgot Password?")]
+                    )
                   ],
                   1
                 )
@@ -13001,9 +13014,20 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("v-btn", { on: { click: _vm.validate } }, [
-                        _vm._v("Send Reset Link")
-                      ])
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "primary" },
+                          on: { click: _vm.validate }
+                        },
+                        [_vm._v("Send Reset Link")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "router-link",
+                        { attrs: { to: { name: "auth.login" } } },
+                        [_vm._v("Login")]
+                      )
                     ],
                     1
                   )
@@ -50762,11 +50786,12 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************************!*\
   !*** ./resources/assets/js/app.js ***!
   \************************************/
-/*! no exports provided */
+/*! exports provided: vm */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "vm", function() { return vm; });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
@@ -50795,7 +50820,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
   routes: _routes_js__WEBPACK_IMPORTED_MODULE_6__["default"]
 });
-new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
+var vm = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   render: function render(h) {
     return h(_App__WEBPACK_IMPORTED_MODULE_5__["default"]);
@@ -51494,15 +51519,30 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/app.js */ "./resources/assets/js/app.js");
+
 
 var token = document.head.querySelector('meta[name="csrf-token"]');
-/* harmony default export */ __webpack_exports__["default"] = (axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
+var instance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   baseURL: '/api/v1/',
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': token.content
   }
-}));
+}); // Add a response interceptor
+
+instance.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  if (error.response.status === 401) {
+    _app_js__WEBPACK_IMPORTED_MODULE_1__["vm"].$router.push({
+      name: 'auth.login'
+    });
+  }
+
+  return error;
+});
+/* harmony default export */ __webpack_exports__["default"] = (instance);
 
 /***/ }),
 
@@ -51565,11 +51605,11 @@ var routes = function routes() {
         name: 'auth.login',
         component: _components_Auth_Login_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
       }, {
-        path: 'password/email',
+        path: '/password/email',
         name: 'auth.email',
         component: _components_Auth_ResetEmail_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
       }, {
-        path: 'password/reset/:token',
+        path: '/password/reset/:token',
         component: _components_Auth_ResetPassword_vue__WEBPACK_IMPORTED_MODULE_7__["default"],
         props: true
       }]

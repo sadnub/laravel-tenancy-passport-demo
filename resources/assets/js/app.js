@@ -19,7 +19,7 @@ const router = new VueRouter({
   routes 
 })
 
-new Vue({
+export const vm = new Vue({
     el: '#app',
     render: h => h(App),
     router

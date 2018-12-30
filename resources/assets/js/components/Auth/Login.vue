@@ -34,7 +34,8 @@
               </v-flex>
             </v-layout>
 
-            <v-btn @click="validate">Login</v-btn>
+            <v-btn color="primary" @click="validate">Login</v-btn>
+            <router-link :to="{name: 'auth.email'}">Forgot Password?</router-link>
           </form>
         </v-card-text>
       </v-card>
