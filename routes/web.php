@@ -11,19 +11,11 @@
 |
 */
 
-//Register Route
-Route::post('register', 'Auth\RegisterController@register');
-
 // Authentication Web Routes
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-    
-// Password Reset Routes
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset');
-
 
 // Route everything else to Vue
-Route::any('{any?}', function () {
+Route::get('{any?}', function () {
     return view('index');
 })->where('any', '.*');

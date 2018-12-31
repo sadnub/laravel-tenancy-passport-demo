@@ -6,16 +6,20 @@
           <v-toolbar-title>Reset Password</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <form method="POST" action="/password/reset" aria-label="Reset Password">
-            
-            <input type="hidden" name="_token" :value="csrf_token">
+              <v-alert
+                v-model="show"
+                :type="status"
+                dismissible>
+                {{ message }}
+              </v-alert>
+          <v-form aria-label="Reset Password">
 
             <input type="hidden" name="token" :value="token">
 
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="email"
+                  v-model="input.email"
                   v-validate="'required|email|max:255'"
                   data-vv-name="email"
                   :error-messages="errors.collect('email')"
@@ -26,7 +30,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="password"
+                  v-model="input.password"
                   v-validate="'required|min:6'"
                   data-vv-name="password"
                   :error-messages="errors.collect('password')"
@@ -38,44 +42,94 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="password_confirmation"
+                  v-model="input.password_confirmation"
                   v-validate="'required|confirmed:password'"
-                  data-vv-as="password"
+                  data-vv-name="password_confirmation"
                   type="password"
                   label="Password Confirmation"
                   name="password_confirmation"></v-text-field>
               </v-flex>
             </v-layout>
 
-            <v-btn type="submit">Reset Password</v-btn>
-          </form>
+            <v-btn 
+              color="primary"
+              loading="loading">
+              Reset Password
+            </v-btn>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-flex>
+    <v-dialog
+      v-model="loading"
+      width="300">
+      <v-card>
+        <v-card-text>
+          {{ text }}
+          <v-progress-linear
+            indeterminate
+            class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
 <script>
+  import Auth from '@/api/auth.js'
+
   export default {
     props: ['token'],
     data: () => ({
-      email: '',
-      password: '',
-      passsword_confirmation: ''
+      input: {
+        email: '',
+        password: '',
+        passsword_confirmation: ''
+      },
+
+      //Dialog Data
+      loading: false,
+      text: '',
+
+      //Alert Data
+      status: 'success',
+      message: '',
+      show: false
+
     }),
-    computed: {
-      csrf_token() {
-        let token = document.head.querySelector('meta[name="csrf-token"]')
-        return token.content
-      }
-    },
     methods: {
       validate() {
         this.$validator.validateAll().then((result) => {
+
           if (result) {
             
-            //Manually submit form if not errors
-            document.getElementById("reset_form").submit()
+            this.text = 'Resetting Password...'
+            this.loading = true
+
+            Auth.resetPassword(this.input)
+            .then(({data}) => {
+
+              this.message = data.message
+              this.status = data.status
+              this.loading = false
+              this.show = true
+
+              if (data.status === 'success'){
+
+                this.text = 'Redirecting to Login Page...'
+                this.loading = true
+
+                setTimeout(() => {
+                  this.$router.push({name: 'auth.login'})
+                }, 2000)
+              }
+            })
+            .catch(error => {
+
+              console.log(error)
+              this.loading = false
+              this.show = false
+            })
           }
         })
       }

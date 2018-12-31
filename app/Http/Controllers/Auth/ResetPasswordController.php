@@ -28,12 +28,48 @@ class ResetPasswordController extends Controller
     protected $redirectTo = '/';
 
     /**
-     * Create a new controller instance.
+     * Get the response for a successful password reset.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetResponse(Request $request, $response)
+    {
+        return response()
+            ->json(['status' => 'success', 'message', trans($response)], 200);
+    }
+
+    /**
+     * Get the response for a failed password reset.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetFailedResponse(Request $request, $response)
+    {
+        return response()
+            ->json(['status' => 'error', 'message' => trans($response)], 200);
+    }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  string  $password
      * @return void
      */
-    public function __construct()
+    protected function resetPassword($user, $password)
     {
-        $this->middleware('guest');
+        $user->password = Hash::make($password);
+
+        $user->setRememberToken(Str::random(60));
+
+        $user->save();
+
+        event(new PasswordReset($user));
+
+        //$this->guard()->login($user);
     }
 }

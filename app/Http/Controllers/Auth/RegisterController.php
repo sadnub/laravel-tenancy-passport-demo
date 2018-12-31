@@ -34,16 +34,6 @@ class RegisterController extends Controller
     protected $redirectTo = '/login';
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
-
-    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -70,14 +60,20 @@ class RegisterController extends Controller
 
         $request->merge(['fqdn' => $request->fqdn . '.' . env('TENANT_URL_BASE')]);
         
-        $this->validator($request->all())->validate();
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {    
+          return response()->json($validator->messages(), 422);
+        }
 
         Tenant::create($request->input('fqdn'));
 
         event(new Registered($user = $this->create($request->all())));
 
-        return $this->registered($request, $user)
-                        ?: redirect('http://' . $request->input('fqdn') . $this->redirectTo);
+        return response()->json([
+            'redirect' => 'http://'.$request->input('fqdn').'/login',
+            'message' => 'Registration Successful!'
+            ], 201);
     }
 
     /**

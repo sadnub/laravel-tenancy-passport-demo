@@ -43,8 +43,8 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
-    protected function loggedOut(Request $request)
+    protected function loggedOut()
     {
-        return redirect('/login')
+        return redirect('/login');
     }
 }

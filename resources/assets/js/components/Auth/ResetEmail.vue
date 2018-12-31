@@ -7,22 +7,18 @@
         </v-toolbar>
           <v-card-text>
             <v-alert
-            v-if="$session.has('status')"
-            :value="true"
-            dismissible
-            type="success"
-            >
-            {{ $session.get('status') }}
+              v-model="show"
+              dismissible
+              :type="status">
+              {{ message }}
             </v-alert>
 
-            <form id="reset_form" method="POST" action="/password/email" aria-label="Reset Password">
-              
-              <input type="hidden" name="_token" :value="csrf_token">
+            <v-form aria-label="Reset Password">
 
               <v-layout row>
                 <v-flex xs12>
                   <v-text-field
-                    v-model="email"
+                    v-model="input.email"
                     v-validate="'required|email|max:255'"
 	                  data-vv-name="email"
 	                  :error-messages="errors.collect('email')"
@@ -31,9 +27,14 @@
                 </v-flex>
               </v-layout>
 
-              <v-btn color="primary" @click="validate">Send Reset Link</v-btn>
+              <v-btn 
+                color="primary" 
+                @click="validate" 
+                :loading="loading">
+                Send Reset Link
+              </v-btn>
               <router-link :to="{name: 'auth.login'}">Login</router-link>
-            </form>
+            </v-form>
           </v-card-text>
         </v-card>
     </v-flex>
@@ -41,25 +42,51 @@
 </template>
 
 <script>
+  import Auth from '@/api/auth.js'
+
 	export default {
     data: () => ({
-      email: ''
+      input: {
+        email: '',
+      },
+      message: '',
+      status: 'success',
+      loading: false,
+      show: false
     }),
-		computed: {
-      csrf_token() {
-        let token = document.head.querySelector('meta[name="csrf-token"]')
-        return token.content
-      }
-    },
     methods: {
       validate() {
+
         this.$validator.validateAll().then((result) => {
-	        if (result) {
-	          
-	          //Manually submit form if not errors
-	          document.getElementById("reset_form").submit()
-	        }
-	      })
+
+          this.show = false
+
+          if (result) {
+            
+            this.loading = true
+
+            this.submit()
+          } 
+        })
+      },
+      submit(){
+        Auth.emailLink(this.email)
+        .then(({data}) => {
+
+          console.log(data)
+
+          this.status = data.status
+          this.message = data.message
+          this.loading = false
+          this.show = true
+
+        })
+        .catch((error) => {
+
+          console.log(error)
+          this.loading = false
+
+        })
       }
     }
   }

@@ -6,13 +6,12 @@
             <v-toolbar-title>Register</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <form id="register_form" method="POST" action="/register" aria-label="Register">
+          <v-form aria-label="Register">
               
-            <input type="hidden" name="_token" :value="csrf_token">
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="name"
+                  v-model="input.name"
                   v-validate="'required|max:255'"
                   data-vv-name="name"
                   :error-messages="errors.collect('name')"
@@ -23,7 +22,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="email"
+                  v-model="input.email"
                   v-validate="'required|email|max:255'"
                   data-vv-name="email"
                   :error-messages="errors.collect('email')"
@@ -34,7 +33,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="fqdn"
+                  v-model="input.fqdn"
                   v-validate="'required|max:255'"
                   data-vv-name="fqdn"
                   :error-messages="errors.collect('fqdn')"
@@ -46,7 +45,7 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="password"
+                  v-model="input.password"
                   v-validate="'required|min:6'"
                   data-vv-name="password"
                   :error-messages="errors.collect('password')"
@@ -59,9 +58,9 @@
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  v-model="password_confirmation"
+                  v-model="input.password_confirmation"
                   v-validate="'required|confirmed:password'"
-                  data-vv-name="password_confirmation"
+                  data-vv-as="password"
                   :error-messages="errors.collect('password_confirmation')"
                   label="Password Confirm"
                   name="password_confirmation"
@@ -69,38 +68,86 @@
               </v-flex>
             </v-layout>
                 
-            <v-btn @click="validate">Submit</v-btn>
-          </form>
+            <v-btn 
+              @click="validate" 
+              :loading="loading" 
+              color="primary">Submit</v-btn>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-flex>
+
+    <v-dialog
+      v-model="show"
+      persistent
+      width="300">
+      <v-card>
+        <v-card-text>
+          {{message}}
+          <div v-if="url">
+          <p>Click on the URL to be directed to the personalized app login page</p>
+          <p>
+            <a :href="url">{{ url }}</a>
+          </p>
+          </div>
+          <v-progress-linear
+            v-show="loading"
+            indeterminate
+            class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
 <script>
 
+  import Auth from '@/api/auth.js'
+
   export default {
     data: () => ({
-      name: '',
-      email: '',
-      fqdn: '',
-      password: '',
-      passsword_confirmation: ''
+      input: {
+        name: '',
+        email: '',
+        fqdn: '',
+        password: '',
+        passsword_confirmation: ''
+      },
+
+      //Dialog Data
+      url: null,
+      message: '',
+      show: false,
+      loading: false
     }),
-    computed: {
-      csrf_token() {
-        let token = document.head.querySelector('meta[name="csrf-token"]')
-        return token.content
-      }
-    },
     methods: {
       validate() {
+
         this.$validator.validateAll().then((result) => {
           if (result) {
             
-            //Manually submit form if not errors
-            document.getElementById("register_form").submit()
-          }
+            this.loading = true
+            this.show = true
+            this.message = 'Registering...'
+
+            Auth.register(this.input)
+            .then(({data}) => {
+
+              this.loading = false
+              this.message = data.message
+              this.url = data.redirect
+
+            })
+            .catch((error) => {
+
+              console.log(error)
+
+              this.loading = false
+              this.show = false
+              this.url = null
+
+            })
+          } 
         })
       }
     }

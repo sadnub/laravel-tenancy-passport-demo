@@ -2,6 +2,7 @@
 namespace App;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Connection;
 use Hyn\Tenancy\Environment;
 use Hyn\Tenancy\Models\Hostname;
 use Hyn\Tenancy\Models\Website;
@@ -30,6 +31,9 @@ class Tenant
     
     public static function create($fqdn): Tenant
     {
+        //Set Database security to LOW
+        app(Connection::class)->statement("SET GLOBAL validate_password_policy=LOW");
+
         // Create New Website
         $website = new Website;
         app(WebsiteRepository::class)->create($website);

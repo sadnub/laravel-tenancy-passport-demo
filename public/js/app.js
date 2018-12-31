@@ -1858,6 +1858,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
 //
 //
 //
@@ -1937,28 +1938,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      name: '',
-      email: '',
-      fqdn: '',
-      password: '',
-      passsword_confirmation: ''
+      input: {
+        name: '',
+        email: '',
+        fqdn: '',
+        password: '',
+        passsword_confirmation: ''
+      },
+      //Dialog Data
+      url: null,
+      message: '',
+      show: false,
+      loading: false
     };
-  },
-  computed: {
-    csrf_token: function csrf_token() {
-      var token = document.head.querySelector('meta[name="csrf-token"]');
-      return token.content;
-    }
   },
   methods: {
     validate: function validate() {
+      var _this = this;
+
       this.$validator.validateAll().then(function (result) {
         if (result) {
-          //Manually submit form if not errors
-          document.getElementById("register_form").submit();
+          _this.loading = true;
+          _this.show = true;
+          _this.message = 'Registering...';
+          _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].register(_this.input).then(function (_ref) {
+            var data = _ref.data;
+            _this.loading = false;
+            _this.message = data.message;
+            _this.url = data.redirect;
+          }).catch(function (error) {
+            console.log(error);
+            _this.loading = false;
+            _this.show = false;
+            _this.url = null;
+          });
         }
       });
     }
@@ -1976,6 +2016,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
 //
 //
 //
@@ -2018,25 +2059,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      email: ''
+      input: {
+        email: ''
+      },
+      message: '',
+      status: 'success',
+      loading: false,
+      show: false
     };
-  },
-  computed: {
-    csrf_token: function csrf_token() {
-      var token = document.head.querySelector('meta[name="csrf-token"]');
-      return token.content;
-    }
   },
   methods: {
     validate: function validate() {
+      var _this = this;
+
       this.$validator.validateAll().then(function (result) {
+        _this.show = false;
+
         if (result) {
-          //Manually submit form if not errors
-          document.getElementById("reset_form").submit();
+          _this.loading = true;
+
+          _this.submit();
         }
+      });
+    },
+    submit: function submit() {
+      var _this2 = this;
+
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].emailLink(this.email).then(function (_ref) {
+        var data = _ref.data;
+        console.log(data);
+        _this2.status = data.status;
+        _this2.message = data.message;
+        _this2.loading = false;
+        _this2.show = true;
+      }).catch(function (error) {
+        console.log(error);
+        _this2.loading = false;
       });
     }
   }
@@ -2053,6 +2116,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
 //
 //
 //
@@ -2110,27 +2174,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['token'],
   data: function data() {
     return {
-      email: '',
-      password: '',
-      passsword_confirmation: ''
+      input: {
+        email: '',
+        password: '',
+        passsword_confirmation: ''
+      },
+      //Dialog Data
+      loading: false,
+      text: '',
+      //Alert Data
+      status: 'success',
+      message: '',
+      show: false
     };
-  },
-  computed: {
-    csrf_token: function csrf_token() {
-      var token = document.head.querySelector('meta[name="csrf-token"]');
-      return token.content;
-    }
   },
   methods: {
     validate: function validate() {
+      var _this = this;
+
       this.$validator.validateAll().then(function (result) {
         if (result) {
-          //Manually submit form if not errors
-          document.getElementById("reset_form").submit();
+          _this.text = 'Resetting Password...';
+          _this.loading = true;
+          _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].resetPassword(_this.input).then(function (_ref) {
+            var data = _ref.data;
+            _this.message = data.message;
+            _this.status = data.status;
+            _this.loading = false;
+            _this.show = true;
+
+            if (data.status === 'success') {
+              _this.text = 'Redirecting to Login Page...';
+              _this.loading = true;
+              setTimeout(function () {
+                _this.$router.push({
+                  name: 'auth.login'
+                });
+              }, 2000);
+            }
+          }).catch(function (error) {
+            console.log(error);
+            _this.loading = false;
+            _this.show = false;
+          });
         }
       });
     }
@@ -12664,228 +12775,287 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("v-card-text", [
-                _c(
-                  "form",
-                  {
-                    attrs: {
-                      id: "register_form",
-                      method: "POST",
-                      action: "/register",
-                      "aria-label": "Register"
-                    }
-                  },
-                  [
-                    _c("input", {
-                      attrs: { type: "hidden", name: "_token" },
-                      domProps: { value: _vm.csrf_token }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|max:255",
-                                  expression: "'required|max:255'"
-                                }
-                              ],
-                              attrs: {
-                                "data-vv-name": "name",
-                                "error-messages": _vm.errors.collect("name"),
-                                label: "Name",
-                                name: "name"
-                              },
-                              model: {
-                                value: _vm.name,
-                                callback: function($$v) {
-                                  _vm.name = $$v
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-form",
+                    { attrs: { "aria-label": "Register" } },
+                    [
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|max:255",
+                                    expression: "'required|max:255'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "name",
+                                  "error-messages": _vm.errors.collect("name"),
+                                  label: "Name",
+                                  name: "name"
                                 },
-                                expression: "name"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|email|max:255",
-                                  expression: "'required|email|max:255'"
+                                model: {
+                                  value: _vm.input.name,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "name", $$v)
+                                  },
+                                  expression: "input.name"
                                 }
-                              ],
-                              attrs: {
-                                "data-vv-name": "email",
-                                "error-messages": _vm.errors.collect("email"),
-                                label: "Email",
-                                name: "email"
-                              },
-                              model: {
-                                value: _vm.email,
-                                callback: function($$v) {
-                                  _vm.email = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|email|max:255",
+                                    expression: "'required|email|max:255'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "email",
+                                  "error-messages": _vm.errors.collect("email"),
+                                  label: "Email",
+                                  name: "email"
                                 },
-                                expression: "email"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|max:255",
-                                  expression: "'required|max:255'"
+                                model: {
+                                  value: _vm.input.email,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "email", $$v)
+                                  },
+                                  expression: "input.email"
                                 }
-                              ],
-                              attrs: {
-                                "data-vv-name": "fqdn",
-                                "error-messages": _vm.errors.collect("fqdn"),
-                                label: "FQDN",
-                                name: "fqdn",
-                                suffix: ".app.itplog.com"
-                              },
-                              model: {
-                                value: _vm.fqdn,
-                                callback: function($$v) {
-                                  _vm.fqdn = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|max:255",
+                                    expression: "'required|max:255'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "fqdn",
+                                  "error-messages": _vm.errors.collect("fqdn"),
+                                  label: "FQDN",
+                                  name: "fqdn",
+                                  suffix: ".app.itplog.com"
                                 },
-                                expression: "fqdn"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|min:6",
-                                  expression: "'required|min:6'"
+                                model: {
+                                  value: _vm.input.fqdn,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "fqdn", $$v)
+                                  },
+                                  expression: "input.fqdn"
                                 }
-                              ],
-                              ref: "password",
-                              attrs: {
-                                "data-vv-name": "password",
-                                "error-messages": _vm.errors.collect(
-                                  "password"
-                                ),
-                                label: "Password",
-                                name: "password",
-                                type: "password"
-                              },
-                              model: {
-                                value: _vm.password,
-                                callback: function($$v) {
-                                  _vm.password = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|min:6",
+                                    expression: "'required|min:6'"
+                                  }
+                                ],
+                                ref: "password",
+                                attrs: {
+                                  "data-vv-name": "password",
+                                  "error-messages": _vm.errors.collect(
+                                    "password"
+                                  ),
+                                  label: "Password",
+                                  name: "password",
+                                  type: "password"
                                 },
-                                expression: "password"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|confirmed:password",
-                                  expression: "'required|confirmed:password'"
+                                model: {
+                                  value: _vm.input.password,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "password", $$v)
+                                  },
+                                  expression: "input.password"
                                 }
-                              ],
-                              attrs: {
-                                "data-vv-name": "password_confirmation",
-                                "error-messages": _vm.errors.collect(
-                                  "password_confirmation"
-                                ),
-                                label: "Password Confirm",
-                                name: "password_confirmation",
-                                type: "password"
-                              },
-                              model: {
-                                value: _vm.password_confirmation,
-                                callback: function($$v) {
-                                  _vm.password_confirmation = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|confirmed:password",
+                                    expression: "'required|confirmed:password'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-as": "password",
+                                  "error-messages": _vm.errors.collect(
+                                    "password_confirmation"
+                                  ),
+                                  label: "Password Confirm",
+                                  name: "password_confirmation",
+                                  type: "password"
                                 },
-                                expression: "password_confirmation"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c("v-btn", { on: { click: _vm.validate } }, [
-                      _vm._v("Submit")
-                    ])
-                  ],
-                  1
-                )
-              ])
+                                model: {
+                                  value: _vm.input.password_confirmation,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.input,
+                                      "password_confirmation",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "input.password_confirmation"
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { loading: _vm.loading, color: "primary" },
+                          on: { click: _vm.validate }
+                        },
+                        [_vm._v("Submit")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", width: "300" },
+          model: {
+            value: _vm.show,
+            callback: function($$v) {
+              _vm.show = $$v
+            },
+            expression: "show"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-text",
+                [
+                  _vm._v("\n        " + _vm._s(_vm.message) + "\n        "),
+                  _vm.url
+                    ? _c("div", [
+                        _c("p", [
+                          _vm._v(
+                            "Click on the URL to be directed to the personalized app login page"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("p", [
+                          _c("a", { attrs: { href: _vm.url } }, [
+                            _vm._v(_vm._s(_vm.url))
+                          ])
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("v-progress-linear", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.loading,
+                        expression: "loading"
+                      }
+                    ],
+                    staticClass: "mb-0",
+                    attrs: { indeterminate: "" }
+                  })
+                ],
+                1
+              )
             ],
             1
           )
@@ -12940,42 +13110,31 @@ var render = function() {
               _c(
                 "v-card-text",
                 [
-                  _vm.$session.has("status")
-                    ? _c(
-                        "v-alert",
-                        {
-                          attrs: {
-                            value: true,
-                            dismissible: "",
-                            type: "success"
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n            " +
-                              _vm._s(_vm.$session.get("status")) +
-                              "\n            "
-                          )
-                        ]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
                   _c(
-                    "form",
+                    "v-alert",
                     {
-                      attrs: {
-                        id: "reset_form",
-                        method: "POST",
-                        action: "/password/email",
-                        "aria-label": "Reset Password"
+                      attrs: { dismissible: "", type: _vm.status },
+                      model: {
+                        value: _vm.show,
+                        callback: function($$v) {
+                          _vm.show = $$v
+                        },
+                        expression: "show"
                       }
                     },
                     [
-                      _c("input", {
-                        attrs: { type: "hidden", name: "_token" },
-                        domProps: { value: _vm.csrf_token }
-                      }),
-                      _vm._v(" "),
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(_vm.message) +
+                          "\n            "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-form",
+                    { attrs: { "aria-label": "Reset Password" } },
+                    [
                       _c(
                         "v-layout",
                         { attrs: { row: "" } },
@@ -13000,11 +13159,11 @@ var render = function() {
                                   name: "email"
                                 },
                                 model: {
-                                  value: _vm.email,
+                                  value: _vm.input.email,
                                   callback: function($$v) {
-                                    _vm.email = $$v
+                                    _vm.$set(_vm.input, "email", $$v)
                                   },
-                                  expression: "email"
+                                  expression: "input.email"
                                 }
                               })
                             ],
@@ -13017,10 +13176,14 @@ var render = function() {
                       _c(
                         "v-btn",
                         {
-                          attrs: { color: "primary" },
+                          attrs: { color: "primary", loading: _vm.loading },
                           on: { click: _vm.validate }
                         },
-                        [_vm._v("Send Reset Link")]
+                        [
+                          _vm._v(
+                            "\n                Send Reset Link\n              "
+                          )
+                        ]
                       ),
                       _vm._v(" "),
                       _c(
@@ -13085,151 +13248,205 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("v-card-text", [
-                _c(
-                  "form",
-                  {
-                    attrs: {
-                      method: "POST",
-                      action: "/password/reset",
-                      "aria-label": "Reset Password"
-                    }
-                  },
-                  [
-                    _c("input", {
-                      attrs: { type: "hidden", name: "_token" },
-                      domProps: { value: _vm.csrf_token }
-                    }),
-                    _vm._v(" "),
-                    _c("input", {
-                      attrs: { type: "hidden", name: "token" },
-                      domProps: { value: _vm.token }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|email|max:255",
-                                  expression: "'required|email|max:255'"
-                                }
-                              ],
-                              attrs: {
-                                "data-vv-name": "email",
-                                "error-messages": _vm.errors.collect("email"),
-                                label: "Email",
-                                name: "email"
-                              },
-                              model: {
-                                value: _vm.email,
-                                callback: function($$v) {
-                                  _vm.email = $$v
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-alert",
+                    {
+                      attrs: { type: _vm.status, dismissible: "" },
+                      model: {
+                        value: _vm.show,
+                        callback: function($$v) {
+                          _vm.show = $$v
+                        },
+                        expression: "show"
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(_vm.message) +
+                          "\n            "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-form",
+                    { attrs: { "aria-label": "Reset Password" } },
+                    [
+                      _c("input", {
+                        attrs: { type: "hidden", name: "token" },
+                        domProps: { value: _vm.token }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|email|max:255",
+                                    expression: "'required|email|max:255'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "email",
+                                  "error-messages": _vm.errors.collect("email"),
+                                  label: "Email",
+                                  name: "email"
                                 },
-                                expression: "email"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|min:6",
-                                  expression: "'required|min:6'"
+                                model: {
+                                  value: _vm.input.email,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "email", $$v)
+                                  },
+                                  expression: "input.email"
                                 }
-                              ],
-                              attrs: {
-                                "data-vv-name": "password",
-                                "error-messages": _vm.errors.collect(
-                                  "password"
-                                ),
-                                type: "password",
-                                label: "Password",
-                                name: "password"
-                              },
-                              model: {
-                                value: _vm.password,
-                                callback: function($$v) {
-                                  _vm.password = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|min:6",
+                                    expression: "'required|min:6'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "password",
+                                  "error-messages": _vm.errors.collect(
+                                    "password"
+                                  ),
+                                  type: "password",
+                                  label: "Password",
+                                  name: "password"
                                 },
-                                expression: "password"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-layout",
-                      { attrs: { row: "" } },
-                      [
-                        _c(
-                          "v-flex",
-                          { attrs: { xs12: "" } },
-                          [
-                            _c("v-text-field", {
-                              directives: [
-                                {
-                                  name: "validate",
-                                  rawName: "v-validate",
-                                  value: "required|confirmed:password",
-                                  expression: "'required|confirmed:password'"
+                                model: {
+                                  value: _vm.input.password,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.input, "password", $$v)
+                                  },
+                                  expression: "input.password"
                                 }
-                              ],
-                              attrs: {
-                                "data-vv-as": "password",
-                                type: "password",
-                                label: "Password Confirmation",
-                                name: "password_confirmation"
-                              },
-                              model: {
-                                value: _vm.password_confirmation,
-                                callback: function($$v) {
-                                  _vm.password_confirmation = $$v
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-layout",
+                        { attrs: { row: "" } },
+                        [
+                          _c(
+                            "v-flex",
+                            { attrs: { xs12: "" } },
+                            [
+                              _c("v-text-field", {
+                                directives: [
+                                  {
+                                    name: "validate",
+                                    rawName: "v-validate",
+                                    value: "required|confirmed:password",
+                                    expression: "'required|confirmed:password'"
+                                  }
+                                ],
+                                attrs: {
+                                  "data-vv-name": "password_confirmation",
+                                  type: "password",
+                                  label: "Password Confirmation",
+                                  name: "password_confirmation"
                                 },
-                                expression: "password_confirmation"
-                              }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c("v-btn", { attrs: { type: "submit" } }, [
-                      _vm._v("Reset Password")
-                    ])
-                  ],
-                  1
-                )
-              ])
+                                model: {
+                                  value: _vm.input.password_confirmation,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.input,
+                                      "password_confirmation",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "input.password_confirmation"
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        { attrs: { color: "primary", loading: "loading" } },
+                        [_vm._v("\n            Reset Password\n          ")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { width: "300" },
+          model: {
+            value: _vm.loading,
+            callback: function($$v) {
+              _vm.loading = $$v
+            },
+            expression: "loading"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-text",
+                [
+                  _vm._v("\n        " + _vm._s(_vm.text) + "\n        "),
+                  _c("v-progress-linear", {
+                    staticClass: "mb-0",
+                    attrs: { indeterminate: "" }
+                  })
+                ],
+                1
+              )
             ],
             1
           )
@@ -16585,124 +16802,6 @@ if (inBrowser && window.Vue) {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-session/index.js":
-/*!*******************************************!*\
-  !*** ./node_modules/vue-session/index.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var STORAGE = null;
-var VueSession = {
-    key: 'vue-session-key',
-    flash_key: 'vue-session-flash-key',
-    setAll: function(all){
-        STORAGE.setItem(VueSession.key,JSON.stringify(all));
-    }
-}
-
-VueSession.install = function(Vue, options) {
-    if(options && 'persist' in options && options.persist) STORAGE = window.localStorage;
-    else STORAGE = window.sessionStorage;
-    Vue.prototype.$session = {
-        flash: {
-            parent: function(){
-                return Vue.prototype.$session;
-            },
-            get: function(key){
-                var all = this.parent().getAll();
-                var all_flash = all[VueSession.flash_key] || {};
-
-                var flash_value = all_flash[key];
-
-                this.remove(key);
-
-                return flash_value;
-            },
-            set: function(key, value){
-                var all = this.parent().getAll();
-                var all_flash = all[VueSession.flash_key] || {};
-
-                all_flash[key] = value;
-                all[VueSession.flash_key] = all_flash;
-
-                VueSession.setAll(all);
-            },
-            remove: function(key){
-                var all = this.parent().getAll();
-                var all_flash = all[VueSession.flash_key] || {};
-
-                delete all_flash[key];
-
-                all[VueSession.flash_key] = all_flash;
-                VueSession.setAll(all);
-            }
-        },
-        getAll: function(){
-            var all = JSON.parse(STORAGE.getItem(VueSession.key));
-            return all || {};
-        },
-        set: function(key,value){
-            if(key == 'session-id') return false;
-            var all = this.getAll();
-
-            if(!('session-id' in all)){
-                this.start();
-                all = this.getAll();
-            }
-
-            all[key] = value;
-
-            VueSession.setAll(all);
-        },
-        get: function(key){
-            var all = this.getAll();
-            return all[key];
-        },
-        start: function(){
-            var all = this.getAll();
-            all['session-id'] = 'sess:'+Date.now();
-
-            VueSession.setAll(all);
-        },
-        renew: function(sessionId){
-            var all = this.getAll();
-            all['session-id'] = 'sess:' + sessionId;
-            VueSession.setAll(all);
-        },
-        exists: function(){
-            var all = this.getAll();
-            return 'session-id' in all;
-        },
-        has: function(key){
-            var all = this.getAll();
-            return key in all;
-        },
-        remove: function(key){
-            var all = this.getAll();
-            delete all[key];
-
-            VueSession.setAll(all);
-        },
-        clear: function(){
-            var all = this.getAll();
-
-            VueSession.setAll({'session-id': all['session-id']});
-        },
-        destroy: function(){
-            VueSession.setAll({});
-        },
-        id: function(){
-            return this.get('session-id');
-        }
-    }
-};
-
-module.exports = VueSession;
 
 
 /***/ }),
@@ -50751,6 +50850,31 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/assets/js/api/auth.js":
+/*!*****************************************!*\
+  !*** ./resources/assets/js/api/auth.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _config_axios_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/config/axios.js */ "./resources/assets/js/config/axios.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  register: function register(data) {
+    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('register', data);
+  },
+  emailLink: function emailLink(data) {
+    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('password/email', data);
+  },
+  resetPassword: function resetPassword(data) {
+    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('password/reset', data);
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/assets/js/api/ticket.js":
 /*!*******************************************!*\
   !*** ./resources/assets/js/api/ticket.js ***!
@@ -50798,12 +50922,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
-/* harmony import */ var vue_session__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-session */ "./node_modules/vue-session/index.js");
-/* harmony import */ var vue_session__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue_session__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/App */ "./resources/assets/js/App.vue");
-/* harmony import */ var _routes_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/routes.js */ "./resources/assets/js/routes.js");
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/App */ "./resources/assets/js/App.vue");
+/* harmony import */ var _routes_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/routes.js */ "./resources/assets/js/routes.js");
 //Imports
-
 
 
 
@@ -50813,17 +50934,16 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_2___default.a);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_3__["default"]);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_session__WEBPACK_IMPORTED_MODULE_4___default.a); //Router configuration
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_3__["default"]); //Router configuration
 
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
-  routes: _routes_js__WEBPACK_IMPORTED_MODULE_6__["default"]
+  routes: _routes_js__WEBPACK_IMPORTED_MODULE_5__["default"]
 });
 var vm = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   render: function render(h) {
-    return h(_App__WEBPACK_IMPORTED_MODULE_5__["default"]);
+    return h(_App__WEBPACK_IMPORTED_MODULE_4__["default"]);
   },
   router: router
 });
@@ -51526,6 +51646,7 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 var instance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   baseURL: '/api/v1/',
   headers: {
+    'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': token.content
   }
@@ -51538,6 +51659,15 @@ instance.interceptors.response.use(function (response) {
     _app_js__WEBPACK_IMPORTED_MODULE_1__["vm"].$router.push({
       name: 'auth.login'
     });
+  } else if (error.response.status === 422) {
+    if (response.data.errors) {
+      for (var key in response.data.errors) {
+        _app_js__WEBPACK_IMPORTED_MODULE_1__["vm"].errors.add({
+          field: key,
+          msg: response.data.errors[key]
+        });
+      }
+    }
   }
 
   return error;

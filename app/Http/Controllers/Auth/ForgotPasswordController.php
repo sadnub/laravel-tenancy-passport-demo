@@ -21,12 +21,27 @@ class ForgotPasswordController extends Controller
     use SendsPasswordResetEmails;
 
     /**
-     * Create a new controller instance.
+     * Get the response for a successful password reset link.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function __construct()
+    protected function sendResetLinkResponse(Request $request, $response)
     {
-        $this->middleware('guest');
+        return response()->json(['status' => 'success', 'message' => trans($response)], 200);
+    }
+
+    /**
+     * Get the response for a failed password reset link.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    protected function sendResetLinkFailedResponse(Request $request, $response)
+    {
+        return response()
+            ->json(['status' => 'error', 'message' => trans($response)], 200);
     }
 }
