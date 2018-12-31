@@ -45,6 +45,7 @@
   import Auth from '@/api/auth.js'
 
 	export default {
+    inject: ['$validator'],
     data: () => ({
       input: {
         email: '',
@@ -64,14 +65,12 @@
           if (result) {
             
             this.loading = true
-
             this.submit()
           } 
         })
       },
       submit(){
-        Auth.emailLink(this.email)
-        .then(({data}) => {
+        Auth.emailLink(this.input).then(({data}) => {
 
           console.log(data)
 
@@ -80,10 +79,8 @@
           this.loading = false
           this.show = true
 
-        })
-        .catch((error) => {
+        }).catch((error) => {
 
-          console.log(error)
           this.loading = false
 
         })

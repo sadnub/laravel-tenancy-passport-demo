@@ -46,6 +46,7 @@
 <script>
 
   export default {
+    inject: ['$validator'],
     data: () => ({
       email: '',
       password: ''

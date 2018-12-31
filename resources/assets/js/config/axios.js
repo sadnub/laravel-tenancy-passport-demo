@@ -21,6 +21,7 @@ instance.interceptors.response.use(
   error => {
 
     if (error.response.status === 401) {
+
     	vm.$router.push({name: 'auth.login'});
 
     } else if (error.response.status === 422) {
@@ -32,6 +33,10 @@ instance.interceptors.response.use(
               vm.$validator.errors.add({field: key, msg: error.response.data.errors[key]})
             }
         }
+
+    } else {
+        
+        console.error(error)
     }
 
     return Promise.reject(error);

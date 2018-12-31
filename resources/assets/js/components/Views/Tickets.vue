@@ -93,6 +93,7 @@
 import Api from '@/api/ticket.js'
 
 export default {
+    inject: ['$validator'],
     data: () => {
         return {
             tickets: [],

@@ -79,6 +79,7 @@
   import Auth from '@/api/auth.js'
 
   export default {
+    inject: ['$validator'],
     props: ['token'],
     data: () => ({
       input: {
@@ -106,31 +107,30 @@
             this.text = 'Resetting Password...'
             this.loading = true
 
-            Auth.resetPassword(this.input)
-            .then(({data}) => {
-
-              this.message = data.message
-              this.status = data.status
-              this.loading = false
-              this.show = true
-
-              if (data.status === 'success'){
-
-                this.text = 'Redirecting to Login Page...'
-                this.loading = true
-
-                setTimeout(() => {
-                  this.$router.push({name: 'auth.login'})
-                }, 2000)
-              }
-            })
-            .catch(error => {
-
-              console.log(error)
-              this.loading = false
-              this.show = false
-            })
           }
+        })
+      },
+      submit() {
+        Auth.resetPassword(this.input).then(({data}) => {
+
+          this.message = data.message
+          this.status = data.status
+          this.loading = false
+          this.show = true
+
+          if (data.status === 'success'){
+
+            this.text = 'Redirecting to Login Page...'
+            this.loading = true
+
+            setTimeout(() => {
+              this.$router.push({name: 'auth.login'})
+            }, 2000)
+          }
+        }).catch(error => {
+
+          this.loading = false
+          this.show = false
         })
       }
     }

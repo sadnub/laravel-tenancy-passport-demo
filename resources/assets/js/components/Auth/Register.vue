@@ -131,22 +131,23 @@
             this.show = true
             this.message = 'Registering...'
 
-            Auth.register(this.input)
-            .then(({data}) => {
-
-              this.loading = false
-              this.message = data.message
-              this.url = data.redirect
-
-            })
-            .catch(({response}) => {
-
-              this.loading = false
-              this.show = false
-              this.url = null
-
-            })
+            this.submit()
           } 
+        })
+      },
+      submit(){
+        Auth.register(this.input).then(({data}) => {
+
+          this.loading = false
+          this.message = data.message
+          this.url = data.redirect
+
+        }).catch(error => {
+
+          this.loading = false
+          this.show = false
+          this.url = null
+
         })
       }
     }

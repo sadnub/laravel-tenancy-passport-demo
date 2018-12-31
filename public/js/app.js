@@ -1823,6 +1823,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  inject: ['$validator'],
   data: function data() {
     return {
       email: '',
@@ -1989,18 +1990,23 @@ __webpack_require__.r(__webpack_exports__);
           _this.loading = true;
           _this.show = true;
           _this.message = 'Registering...';
-          _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].register(_this.input).then(function (_ref) {
-            var data = _ref.data;
-            _this.loading = false;
-            _this.message = data.message;
-            _this.url = data.redirect;
-          }).catch(function (_ref2) {
-            var response = _ref2.response;
-            _this.loading = false;
-            _this.show = false;
-            _this.url = null;
-          });
+
+          _this.submit();
         }
+      });
+    },
+    submit: function submit() {
+      var _this2 = this;
+
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].register(this.input).then(function (_ref) {
+        var data = _ref.data;
+        _this2.loading = false;
+        _this2.message = data.message;
+        _this2.url = data.redirect;
+      }).catch(function (error) {
+        _this2.loading = false;
+        _this2.show = false;
+        _this2.url = null;
       });
     }
   }
@@ -2063,6 +2069,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  inject: ['$validator'],
   data: function data() {
     return {
       input: {
@@ -2091,7 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this2 = this;
 
-      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].emailLink(this.email).then(function (_ref) {
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].emailLink(this.input).then(function (_ref) {
         var data = _ref.data;
         console.log(data);
         _this2.status = data.status;
@@ -2099,7 +2106,6 @@ __webpack_require__.r(__webpack_exports__);
         _this2.loading = false;
         _this2.show = true;
       }).catch(function (error) {
-        console.log(error);
         _this2.loading = false;
       });
     }
@@ -2197,6 +2203,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  inject: ['$validator'],
   props: ['token'],
   data: function data() {
     return {
@@ -2222,28 +2229,31 @@ __webpack_require__.r(__webpack_exports__);
         if (result) {
           _this.text = 'Resetting Password...';
           _this.loading = true;
-          _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].resetPassword(_this.input).then(function (_ref) {
-            var data = _ref.data;
-            _this.message = data.message;
-            _this.status = data.status;
-            _this.loading = false;
-            _this.show = true;
-
-            if (data.status === 'success') {
-              _this.text = 'Redirecting to Login Page...';
-              _this.loading = true;
-              setTimeout(function () {
-                _this.$router.push({
-                  name: 'auth.login'
-                });
-              }, 2000);
-            }
-          }).catch(function (error) {
-            console.log(error);
-            _this.loading = false;
-            _this.show = false;
-          });
         }
+      });
+    },
+    submit: function submit() {
+      var _this2 = this;
+
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].resetPassword(this.input).then(function (_ref) {
+        var data = _ref.data;
+        _this2.message = data.message;
+        _this2.status = data.status;
+        _this2.loading = false;
+        _this2.show = true;
+
+        if (data.status === 'success') {
+          _this2.text = 'Redirecting to Login Page...';
+          _this2.loading = true;
+          setTimeout(function () {
+            _this2.$router.push({
+              name: 'auth.login'
+            });
+          }, 2000);
+        }
+      }).catch(function (error) {
+        _this2.loading = false;
+        _this2.show = false;
       });
     }
   }
@@ -2482,6 +2492,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  inject: ['$validator'],
   data: function data() {
     return {
       tickets: [],
@@ -51671,6 +51682,8 @@ instance.interceptors.response.use(function (response) {
         });
       }
     }
+  } else {
+    console.error(error);
   }
 
   return Promise.reject(error);
