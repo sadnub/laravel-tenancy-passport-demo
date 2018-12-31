@@ -2201,6 +2201,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
@@ -2210,7 +2212,7 @@ __webpack_require__.r(__webpack_exports__);
       input: {
         email: '',
         password: '',
-        passsword_confirmation: ''
+        password_confirmation: ''
       },
       //Dialog Data
       loading: false,
@@ -2229,6 +2231,8 @@ __webpack_require__.r(__webpack_exports__);
         if (result) {
           _this.text = 'Resetting Password...';
           _this.loading = true;
+
+          _this.submit();
         }
       });
     },
@@ -13277,9 +13281,7 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n              " +
-                          _vm._s(_vm.message) +
-                          "\n            "
+                        "\n          " + _vm._s(_vm.message) + "\n        "
                       )
                     ]
                   ),
@@ -13348,6 +13350,7 @@ var render = function() {
                                     expression: "'required|min:6'"
                                   }
                                 ],
+                                ref: "password",
                                 attrs: {
                                   "data-vv-name": "password",
                                   "error-messages": _vm.errors.collect(
@@ -13390,9 +13393,9 @@ var render = function() {
                                   }
                                 ],
                                 attrs: {
-                                  "data-vv-name": "password_confirmation",
+                                  "data-vv-as": "password",
                                   type: "password",
-                                  label: "Password Confirmation",
+                                  label: "Password Confirm",
                                   name: "password_confirmation"
                                 },
                                 model: {
@@ -13416,7 +13419,10 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "v-btn",
-                        { attrs: { color: "primary", loading: "loading" } },
+                        {
+                          attrs: { color: "primary", loading: _vm.loading },
+                          on: { click: _vm.validate }
+                        },
                         [_vm._v("\n            Reset Password\n          ")]
                       )
                     ],

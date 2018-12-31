@@ -6,12 +6,12 @@
           <v-toolbar-title>Reset Password</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-              <v-alert
-                v-model="show"
-                :type="status"
-                dismissible>
-                {{ message }}
-              </v-alert>
+          <v-alert
+            v-model="show"
+            :type="status"
+            dismissible>
+            {{ message }}
+          </v-alert>
           <v-form aria-label="Reset Password">
 
             <input type="hidden" name="token" :value="token">
@@ -34,6 +34,7 @@
                   v-validate="'required|min:6'"
                   data-vv-name="password"
                   :error-messages="errors.collect('password')"
+                  ref="password"
                   type="password"
                   label="Password"
                   name="password"></v-text-field>
@@ -44,16 +45,17 @@
                 <v-text-field
                   v-model="input.password_confirmation"
                   v-validate="'required|confirmed:password'"
-                  data-vv-name="password_confirmation"
+                  data-vv-as="password"
                   type="password"
-                  label="Password Confirmation"
+                  label="Password Confirm"
                   name="password_confirmation"></v-text-field>
               </v-flex>
             </v-layout>
 
-            <v-btn 
+            <v-btn
+              @click="validate" 
               color="primary"
-              loading="loading">
+              :loading="loading">
               Reset Password
             </v-btn>
           </v-form>
@@ -85,7 +87,7 @@
       input: {
         email: '',
         password: '',
-        passsword_confirmation: ''
+        password_confirmation: ''
       },
 
       //Dialog Data
@@ -106,6 +108,8 @@
             
             this.text = 'Resetting Password...'
             this.loading = true
+
+            this.submit()
 
           }
         })
