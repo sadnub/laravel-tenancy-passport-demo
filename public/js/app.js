@@ -1963,6 +1963,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  inject: ['$validator'],
   data: function data() {
     return {
       input: {
@@ -1993,8 +1994,8 @@ __webpack_require__.r(__webpack_exports__);
             _this.loading = false;
             _this.message = data.message;
             _this.url = data.redirect;
-          }).catch(function (error) {
-            console.log(error);
+          }).catch(function (_ref2) {
+            var response = _ref2.response;
             _this.loading = false;
             _this.show = false;
             _this.url = null;
@@ -50934,7 +50935,9 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_2___default.a);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_3__["default"]); //Router configuration
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  inject: false
+}); //Router configuration
 
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
@@ -51660,17 +51663,17 @@ instance.interceptors.response.use(function (response) {
       name: 'auth.login'
     });
   } else if (error.response.status === 422) {
-    if (response.data.errors) {
-      for (var key in response.data.errors) {
-        _app_js__WEBPACK_IMPORTED_MODULE_1__["vm"].errors.add({
+    if (error.response.data.errors) {
+      for (var key in error.response.data.errors) {
+        _app_js__WEBPACK_IMPORTED_MODULE_1__["vm"].$validator.errors.add({
           field: key,
-          msg: response.data.errors[key]
+          msg: error.response.data.errors[key]
         });
       }
     }
   }
 
-  return error;
+  return Promise.reject(error);
 });
 /* harmony default export */ __webpack_exports__["default"] = (instance);
 

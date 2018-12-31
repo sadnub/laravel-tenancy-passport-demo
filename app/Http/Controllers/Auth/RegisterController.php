@@ -60,11 +60,7 @@ class RegisterController extends Controller
 
         $request->merge(['fqdn' => $request->fqdn . '.' . env('TENANT_URL_BASE')]);
         
-        $validator = $this->validator($request->all());
-
-        if ($validator->fails()) {    
-          return response()->json($validator->messages(), 422);
-        }
+        $this->validator($request->all())->validate();
 
         Tenant::create($request->input('fqdn'));
 

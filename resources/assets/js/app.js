@@ -9,7 +9,7 @@ import routes from '@/routes.js'
 //Load Plugins
 Vue.use(VueRouter)
 Vue.use(Vuetify)
-Vue.use(VeeValidate)
+Vue.use(VeeValidate, { inject: false })
 
 //Router configuration
 const router = new VueRouter({

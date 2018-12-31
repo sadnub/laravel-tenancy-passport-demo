@@ -105,6 +105,7 @@
   import Auth from '@/api/auth.js'
 
   export default {
+    inject: ['$validator'],
     data: () => ({
       input: {
         name: '',
@@ -138,9 +139,7 @@
               this.url = data.redirect
 
             })
-            .catch((error) => {
-
-              console.log(error)
+            .catch(({response}) => {
 
               this.loading = false
               this.show = false

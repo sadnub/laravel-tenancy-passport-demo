@@ -25,16 +25,16 @@ instance.interceptors.response.use(
 
     } else if (error.response.status === 422) {
 
-        if (response.data.errors){
+        if (error.response.data.errors){
         
-            for(let key in response.data.errors){
+            for(let key in error.response.data.errors){
             
-              vm.errors.add({field: key, msg: response.data.errors[key]})
+              vm.$validator.errors.add({field: key, msg: error.response.data.errors[key]})
             }
         }
     }
 
-    return error;
+    return Promise.reject(error);
 })
 
 export default instance

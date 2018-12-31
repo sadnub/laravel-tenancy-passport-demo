@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Auth Routes
-
 Route::group(['prefix' => 'v1'], function () {
 
 	Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
