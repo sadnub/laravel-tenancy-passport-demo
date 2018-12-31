@@ -20,16 +20,6 @@ class LoginTest extends TenantTestCase
     }
     
     /** @test */
-    public function browsePage()
-    {
-        // Visit login page at tenant url
-        $this->get($this->url)
-            ->assertViewIs('auth.login')
-            ->assertSee('Login - ' . env('APP_NAME'));
-            
-    }
-    
-    /** @test */
     public function sendLogin()
     {
         // Visit Page first for correct redirect

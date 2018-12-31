@@ -25,17 +25,17 @@ const routes = () => {
 	if (host.includes('APP.ITPLOG.COM')) {
 
 		return [
-		    {path: '/', component: DashboardLayout,
-			    children: [
-			    	{path: 'dashboard', name: 'dashboard', component: Dashboard},
-			    	{path: 'tickets', name: 'dashbaord.tickets', component: Tickets},
-			    ]
+		  {path: '/', component: DashboardLayout,
+		    children: [
+		    	{path: 'dashboard', name: 'dashboard', component: Dashboard},
+		    	{path: 'tickets', name: 'dashbaord.tickets', component: Tickets},
+		    ]
 			},
 			{path: '/auth', component: AuthLayout,
 				children: [
 					{path: '/login', name: 'auth.login' ,component: Login},
-				    {path: '/password/email', name: 'auth.email', component: ResetEmail},
-				    {path: '/password/reset/:token', component: ResetPassword, props: true},
+			    {path: '/password/email', name: 'auth.email', component: ResetEmail},
+			    {path: '/password/reset/:token', component: ResetPassword, props: true},
 				]
 			},
 			{path: '*', component: NotFound}
