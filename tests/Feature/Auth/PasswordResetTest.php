@@ -35,17 +35,17 @@ class ResetPasswordTest extends TenantTestCase
         Notification::fake();
         
         // Send invalid request
-        $this->post($this->url.'/email', [])
+        $this->postJson($this->url.'/email', [])
             ->assertStatus(422);
             
         $user = factory(User::class)->create();
         
         // Send valid response
-        $this->post($this->url.'/email', [
+        $this->postJson($this->url.'/email', [
             'email' => $user->email,
         ])
         ->assertOk()
-        ->JsonFragment([
+        ->assertJsonFragment([
             'status' => 'success'
         ]);
         
@@ -53,11 +53,11 @@ class ResetPasswordTest extends TenantTestCase
         Notification::assertSentTo($user, \App\Notifications\ResetPassword::class);
         
         // Send invalid email
-        $this->post($this->url.'/email', [
+        $this->postJson($this->url.'/email', [
             'email' => 'test@email.com',
         ])
         ->assertOk()
-        ->JsonFragment([
+        ->assertJsonFragment([
             'status' => 'error'
         ]);
     }
@@ -70,25 +70,25 @@ class ResetPasswordTest extends TenantTestCase
         
         $token = $this->getValidToken($user);
 
-        $this->post($this->url.'/reset', [
+        $this->postJson($this->url.'/reset', [
             'token' => 'invalid',
             'email' => $user->email,
             'password' => 'new-awesome-password',
             'password_confirmation' => 'new-awesome-password',    
         ])
         ->assertOk()
-        ->JsonFragment([
+        ->assertJsonFragment([
             'status' => 'error'
         ]);
             
-        $this->post($this->url.'/reset', [
+        $this->postJson($this->url.'/reset', [
             'token' => $token,
             'email' => $user->email,
             'password' => 'new-awesome-password',
             'password_confirmation' => 'new-awesome-password',    
         ])
         ->assertOk()
-        ->JsonFragment([
+        ->assertJsonFragment([
             'status' => 'success'
         ]);
             

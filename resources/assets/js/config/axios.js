@@ -6,7 +6,6 @@ let token = document.head.querySelector('meta[name="csrf-token"]')
 const instance = axios.create({
     baseURL: '/api/v1/',
     headers: {
-        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-TOKEN': token.content
     }
