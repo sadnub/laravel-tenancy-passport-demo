@@ -1860,6 +1860,21 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1963,6 +1978,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
   data: function data() {
@@ -1978,7 +1994,9 @@ __webpack_require__.r(__webpack_exports__);
       url: null,
       message: '',
       show: false,
-      loading: false
+      loading: false,
+      //Unique Validation
+      validating: false
     };
   },
   methods: {
@@ -2009,6 +2027,35 @@ __webpack_require__.r(__webpack_exports__);
         _this2.url = null;
       });
     }
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    //Unique fqdn check function
+    var isUnique = function isUnique(value) {
+      console.log(value);
+      _this3.validating = true;
+      return _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].checkDomain({
+        fqdn: value
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+        _this3.validating = false;
+        return data;
+      }).catch(function (error) {
+        console.log({
+          error: error
+        });
+        _this3.validating = false;
+      });
+    }; //Extend Validator instance with new validation function
+
+
+    vee_validate__WEBPACK_IMPORTED_MODULE_1__["Validator"].extend("unique", {
+      validate: isUnique,
+      getMessage: function getMessage(field, params, data) {
+        return data.message;
+      }
+    });
   }
 });
 
@@ -12882,30 +12929,71 @@ var render = function() {
                             "v-flex",
                             { attrs: { xs12: "" } },
                             [
-                              _c("v-text-field", {
-                                directives: [
-                                  {
-                                    name: "validate",
-                                    rawName: "v-validate",
-                                    value: "required|max:255",
-                                    expression: "'required|max:255'"
-                                  }
-                                ],
-                                attrs: {
-                                  "data-vv-name": "fqdn",
-                                  "error-messages": _vm.errors.collect("fqdn"),
-                                  label: "FQDN",
-                                  name: "fqdn",
-                                  suffix: ".app.itplog.com"
-                                },
-                                model: {
-                                  value: _vm.input.fqdn,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.input, "fqdn", $$v)
+                              _c(
+                                "v-text-field",
+                                {
+                                  directives: [
+                                    {
+                                      name: "validate",
+                                      rawName: "v-validate",
+                                      value: "required|unique|max:255",
+                                      expression: "'required|unique|max:255'"
+                                    }
+                                  ],
+                                  attrs: {
+                                    "data-vv-name": "fqdn",
+                                    "data-vv-delay": "500",
+                                    "error-messages": _vm.errors.collect(
+                                      "fqdn"
+                                    ),
+                                    label: "FQDN",
+                                    name: "fqdn",
+                                    suffix: ".app.itplog.com"
                                   },
-                                  expression: "input.fqdn"
-                                }
-                              })
+                                  model: {
+                                    value: _vm.input.fqdn,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.input, "fqdn", $$v)
+                                    },
+                                    expression: "input.fqdn"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-fade-transition",
+                                    {
+                                      attrs: {
+                                        slot: "append",
+                                        "leave-absolute": ""
+                                      },
+                                      slot: "append"
+                                    },
+                                    [
+                                      _vm.validating
+                                        ? _c("v-progress-circular", {
+                                            attrs: {
+                                              size: "24",
+                                              color: "info",
+                                              indeterminate: ""
+                                            }
+                                          })
+                                        : _vm.errors.first("fqdn")
+                                          ? _c(
+                                              "v-icon",
+                                              { attrs: { color: "error" } },
+                                              [_vm._v("close")]
+                                            )
+                                          : _c(
+                                              "v-icon",
+                                              { attrs: { color: "success" } },
+                                              [_vm._v("check")]
+                                            )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -50888,6 +50976,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   resetPassword: function resetPassword(data) {
     return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('password/reset', data);
+  },
+  checkDomain: function checkDomain(data) {
+    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('checkDomain', data);
   }
 });
 
@@ -51043,14 +51134,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************************!*\
   !*** ./resources/assets/js/components/Auth/Register.vue ***!
   \**********************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Register_vue_vue_type_template_id_49f475a3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Register.vue?vue&type=template&id=49f475a3& */ "./resources/assets/js/components/Auth/Register.vue?vue&type=template&id=49f475a3&");
 /* harmony import */ var _Register_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Register.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/Auth/Register.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Register_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Register_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -51080,7 +51172,7 @@ component.options.__file = "resources/assets/js/components/Auth/Register.vue"
 /*!***********************************************************************************!*\
   !*** ./resources/assets/js/components/Auth/Register.vue?vue&type=script&lang=js& ***!
   \***********************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51666,7 +51758,6 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 var instance = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   baseURL: '/api/v1/',
   headers: {
-    'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': token.content
   }

@@ -14,4 +14,7 @@ export default {
 		return axios.post('password/reset', data)
 	},
 
+	checkDomain(data) {
+		return axios.post('checkDomain', data)
+	}
 }

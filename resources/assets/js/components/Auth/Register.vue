@@ -34,12 +34,26 @@
               <v-flex xs12>
                 <v-text-field
                   v-model="input.fqdn"
-                  v-validate="'required|max:255'"
+                  v-validate="'required|unique|max:255'"
                   data-vv-name="fqdn"
+                  data-vv-delay="500"
                   :error-messages="errors.collect('fqdn')"
                   label="FQDN"
                   name="fqdn"
-                  suffix=".app.itplog.com"></v-text-field>
+                  suffix=".app.itplog.com">
+
+                  <v-fade-transition leave-absolute slot="append">
+                  <v-progress-circular
+                    v-if="validating"
+                    size="24"
+                    color="info"
+                    indeterminate
+                  ></v-progress-circular>
+                  <v-icon v-else-if="errors.first('fqdn')" color="error">close</v-icon>
+                  <v-icon v-else color="success">check</v-icon>
+                </v-fade-transition> 
+
+                </v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row>
@@ -103,6 +117,7 @@
 <script>
 
   import Auth from '@/api/auth.js'
+  import { Validator } from 'vee-validate'
 
   export default {
     inject: ['$validator'],
@@ -119,7 +134,10 @@
       url: null,
       message: '',
       show: false,
-      loading: false
+      loading: false,
+
+      //Unique Validation
+      validating: false
     }),
     methods: {
       validate() {
@@ -150,6 +168,31 @@
 
         })
       }
+    },
+    mounted (){
+
+      //Unique fqdn check function
+      const isUnique = (value) => {
+
+        this.validating = true
+
+        return Auth.checkDomain({fqdn: value}).then(({data}) => {
+
+          this.validating = false
+
+          return data
+          
+        })
+        .catch(error => {
+          this.validating = false
+        })
+      } 
+
+      //Extend Validator instance with new validation function
+      Validator.extend("unique", {
+        validate: isUnique,
+        getMessage: (field, params, data) => data.message
+      });
     }
   }
 </script>

@@ -73,6 +73,31 @@ class RegisterController extends Controller
     }
 
     /**
+     * Checks if the fqdn is valid.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function checkDomain(Request $request)
+    {
+
+        $request->merge(['fqdn' => $request->fqdn . '.' . env('TENANT_URL_BASE')]);
+
+        Validator::make($request->all(), [
+            'fqdn' => 'unique:system.hostnames'
+        ])->validate();
+
+        return response()->json([
+            'valid' => true,
+            'data' => [
+                'message' => 'Domain is available!'
+            ]
+        ], 200);
+
+
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
