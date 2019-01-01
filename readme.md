@@ -13,6 +13,8 @@ Check out series below:
 
 <a href="https://medium.com/@sadnub/vuejs-and-laravel-api-part-2-711c4986281c" target="_blank">Part 2 </a> —  VueJS and Laravel API
 
+<a href="https://medium.com/@sadnub/vuejs-and-laravel-auth-part-2-5-d7c9d0263226" target="_blank">Part 2.5 </a>  —  VueJS and Laravel Auth
+
 <a href="https://medium.com/@sadnub/laravel-multi-tenant-testing-part-3-a37901054ec6" target="_blank">Part 3 </a>  —  Laravel Multi-Tenant Testing
 
 # Contribution
