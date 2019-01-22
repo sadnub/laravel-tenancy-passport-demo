@@ -16,9 +16,11 @@ trait InteractsWithPassport
     
     public function createUserWithToken()
     {
+        config(['database.default' => 'tenant']);
+        
         $clientRepository = new ClientRepository();
         $client = $clientRepository->createPersonalAccessClient(
-            null, 'Test Personal Access Client', $this->tenantUrl
+            null, 'Test Personal Access Client', 'http://'.$this->tenantUrl
         );
     
         DB::table('oauth_personal_access_clients')->insert([
@@ -32,12 +34,7 @@ trait InteractsWithPassport
         $this->headers['Accept'] = 'application/json';
         $this->headers['Authorization'] = 'Bearer '.$token;
     }
-  
-    public function get($uri, array $headers = [])
-    {
-        return parent::get($this->addBaseUrl($uri), array_merge($this->headers, $headers));
-    }
-    
+
     public function getJson($uri, array $headers = [])
     {
         return parent::getJson($this->addBaseUrl($uri), array_merge($this->headers, $headers));
@@ -60,6 +57,6 @@ trait InteractsWithPassport
     
     protected function addBaseUrl($uri)
     {
-        return $this->tenantUrl . $uri;
+        return 'http://'.$this->tenantUrl . $uri;
     }
 }

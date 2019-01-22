@@ -1,47 +1,24 @@
 <?php
 namespace Tests;
 
-use Illuminate\Contracts\Console\Kernel;
-use Tests\Traits\InteractsWithTenancy;
 use Tests\TestCase;
+use Tests\Traits\InteractsWithTenancy;
+use Tests\Traits\CreatesApplication;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
-abstract class TenantTestCase extends TestCase
+abstract class TenantTestCase extends BaseTestCase
 {
-    use InteractsWithTenancy;
+    use CreatesApplication, InteractsWithTenancy;
     
     protected $tenantUrl;
-    
-    /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
-    {
-        $app = require __DIR__.'/../bootstrap/app.php';
-        $app->make(Kernel::class)->bootstrap();
-        
-        $this->setUpTenancy();
-        
-        return $app;
-    }
-    
-    protected function refreshApplication()
-    {
-        parent::refreshApplication();
-        $this->artisan('migrate:fresh');
-    }
     
     protected function setUp()
     {
         parent::setUp();
 
-        $this->tenantUrl = 'http://testing.' . env('TENANT_URL_BASE');
-        
-        $this->artisan('migrate:fresh', [
-            '--no-interaction' => 1,
-            '--force' => 1
-        ]);
+        $this->tenantUrl = 'testing.' . env('TENANT_URL_BASE');
+        $this->setUpTenancy();
+        $this->activateTenant();
         
         $this->duringSetup();
         

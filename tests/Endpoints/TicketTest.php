@@ -9,13 +9,6 @@ class TicketsTest extends TenantTestCase
 {
     use InteractsWithPassport;
     
-    protected function duringSetup()
-    {
-        $this->setUpHostnames(true);
-        $this->setUpWebsites(true, true);
-        $this->activateTenant();
-    }
-    
     /** @test */
     public function gettingAllTickets()
     {
@@ -30,7 +23,7 @@ class TicketsTest extends TenantTestCase
         $this->createUserWithToken();
         
         // With Authencation
-        $this->get('/api/v1/tickets')
+        $this->getJson('/api/v1/tickets')
             ->assertOk()
             ->assertJsonFragment([
                 'id' => $ticket->id,

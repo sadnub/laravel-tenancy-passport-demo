@@ -15,12 +15,8 @@ class ResetPasswordTest extends TenantTestCase
     
     protected function duringSetup()
     {
-        $this->setUpHostnames(true);
-        $this->setUpWebsites(true, true);
-        $this->activateTenant();
-        
 
-        $this->url = $this->tenantUrl . '/api/v1/password';
+        $this->url = 'http://' .$this->tenantUrl . '/api/v1/password';
     }
     
     protected function getValidToken($user)

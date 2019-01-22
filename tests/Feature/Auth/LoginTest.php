@@ -12,11 +12,9 @@ class LoginTest extends TenantTestCase
     
     protected function duringSetup()
     {
-        $this->setUpHostnames(true);
-        $this->setUpWebsites(true, true);
-        $this->activateTenant();
         
-        $this->url = $this->tenantUrl . '/login';
+        $this->url = 'http://'.$this->tenantUrl . '/login';
+        
     }
     
     /** @test */
@@ -37,7 +35,7 @@ class LoginTest extends TenantTestCase
             'email' => $user->email,
             'password' => 'secret',
         ])
-        ->assertRedirect($this->tenantUrl)
+        ->assertRedirect('http://'.$this->tenantUrl)
         ->assertSessionHasNoErrors();
         
         //Make sure application logs in use
@@ -54,7 +52,7 @@ class LoginTest extends TenantTestCase
             'password' => 'secret',
             'remember' => 'on',
         ])
-        ->assertRedirect($this->tenantUrl)
+        ->assertRedirect('http://'.$this->tenantUrl)
         ->assertCookie(Auth::guard()->getRecallerName(), vsprintf('%s|%s|%s', [
             $user->id,
             $user->getRememberToken(),
