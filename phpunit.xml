@@ -34,7 +34,7 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="MAIL_DRIVER" value="array"/>
-        <env name="TENANCY_DATABASE" value="tenancy_test"/>
+        <env name="DB_DATABASE" value="tenancy_test"/>
         <env name="TENANCY_DATABASE_AUTO_DELETE" value="1"/>
         <env name="TENANCY_DATABASE_AUTO_DELETE_USER" value="1"/>
         <env name="TENANCY_AUTO_HOSTNAME_IDENTIFICATION" value="0" />
