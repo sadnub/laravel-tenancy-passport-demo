@@ -11,7 +11,7 @@ You must create a tenant before logging into the dashboard. Each tenant has a sp
 
 Check out series below. Use the Main branch for parts 0 1, 2, and 3
 
-<a href="https://medium.com/@sadnub/laravel-multi-tenant-app-setup-part-0-ee4c730f4c2a" target="_blank">Part 0 </a>- Laravel Multi-Tenant App Setup
+<a href="https://medium.com/@sadnub/laravel-multi-tenant-app-setup-part-0-ee4c730f4c2a" target="_blank">Part 0 </a> -  Laravel Multi-Tenant App Setup
 
 <a href="https://medium.com/@sadnub/hyn-tenancy-5-2-and-laravel-passport-a0d11c5a08eb" target="_blank">Part 1 </a> —  Laravel Passport and Hyn\Tenancy
 
