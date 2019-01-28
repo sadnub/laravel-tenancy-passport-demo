@@ -1,0 +1,61 @@
+"A datetime string with format 'Y-m-d H:i:s', e.g. '2018-01-01 13:00:00'."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format 'Y-m-d', e.g. '2011-05-23'."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    users: [User!]! @paginate(type: "paginator" model: "App\\User")
+    user(id: ID @eq): User @find(model: "App\\User")
+    tickets: [Ticket!]! @paginate(type: "paginator" model: "App\\Ticket")
+    ticket(id: ID @eq): Ticket @find(model: "App\\Ticket")
+}
+
+type Mutation {
+    createUser(
+        name: String @rules(apply: ["required"])
+        email: String @rules(apply: ["required", "email", "unique:users,email"])
+    ): User @create(model: "App\\User")
+    updateUser(
+        id: ID @rules(apply: ["required"])
+        name: String
+        email: String @rules(apply: ["email"])
+    ): User @update(model: "App\\User")
+    deleteUser(
+        id: ID @rules(apply: ["required"])
+    ): User @delete(model: "App\\User")
+    createTicket(
+        title: String @rules(apply: ["required", "string", "max:255"])
+        contact: String @rules(apply: ["required", "string", "max:255"])
+        status: String @rules(apply: ["required", "string", "max:255"])
+        issue: String @rules(apply: ["required", "string", "max:255"])
+    ): Ticket @create(model: "App\\Ticket")
+    updateTicket(
+        id: ID @rules(apply: ["required"])
+        title: String @rules(apply: ["string", "max:255"])
+        contact: String @rules(apply: ["string", "max:255"])
+        status: String @rules(apply: ["string", "max:255"])
+        issue: String @rules(apply: ["string", "max:255"])
+    ): Ticket @update(model: "App\\Ticket")
+    deleteTicket(
+        id: ID @rules(apply: ["required"])
+    ): Ticket @delete(model: "App\\Ticket")
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Ticket {
+    id: ID!
+    title: String!
+    contact: String!
+    status: String!
+    issue: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}

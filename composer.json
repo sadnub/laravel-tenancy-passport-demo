@@ -10,7 +10,8 @@
         "hyn/multi-tenant": "5.3.*",
         "laravel/framework": "5.7.*",
         "laravel/passport": "7.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "nuwave/lighthouse": "^2.6"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

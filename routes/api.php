@@ -20,8 +20,3 @@ Route::group(['prefix' => 'v1'], function () {
 	Route::post('register', 'Auth\RegisterController@register');
 	Route::post('checkDomain', 'Auth\RegisterController@checkDomain');
 });
-
-Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
-    
-    Route::apiResource('tickets', 'API\TicketController');
-});

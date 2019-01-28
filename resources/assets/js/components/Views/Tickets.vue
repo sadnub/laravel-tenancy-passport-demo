@@ -124,6 +124,11 @@ export default {
             color: ''
         }
     },
+    apollo: {
+      tickets: {
+        query: getTickets
+      }
+    },
     created() {
         Api.getTickets()
         .then(({ data }) => {
