@@ -25,6 +25,12 @@ These articles are using the master branch
 
 <a href="https://medium.com/@sadnub/faster-multitenant-testing-in-laravel-4769eae4b603" target="_blank">Faster Multi-Tenant testing with Laravel </a>
 
+# GraphQL demo
+
+Use the graphql branch for the article below.
+
+<a href="https://medium.com/@sadnub/migrating-to-graphql-on-laravel-with-lighthouse-42bd96d9d73?source=friends_link&sk=302fe4dc73338084b2102e428029feda" target="_blank">Migrating to GraphQL on Laravel with Lighthouse </a>
+
 
 # Contribution
 If you found my article or this repo useful, please consider contributing so I can provide more helpful content!
