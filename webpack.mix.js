@@ -17,6 +17,15 @@ mix.webpackConfig({
         '@': __dirname + '/resources/assets/js'
       },
     },
+    module: {
+      rules: [
+        {
+          test: /\.(graphql|gql)$/,
+          exclude: /node_modules/,
+          loader: 'graphql-tag/loader',
+        }
+      ]
+    }
   })
 
 mix.js('resources/assets/js/app.js', 'public/js')

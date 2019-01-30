@@ -1,0 +1,40 @@
+#Fragments
+fragment TicketsFields on Ticket {
+  id
+  title
+  issue
+  status
+  contact
+}
+
+#Queries
+query getTickets {
+  tickets {
+    ...TicketsFields
+  }
+}
+
+query getTicket($id: ID!) {
+  ticket (id: $id){
+    ...TicketsFields
+  }
+}
+
+#Mutations
+mutation createTicket($title: String, $issue: String, $status: String, $contact: String) {
+  createTicket(title: $title, issue: $issue, status: $status, contact: $contact) {
+    ...TicketsFields
+  }
+}
+
+mutation updateTicket($id: ID!, $title: String, $issue: String, $status: String, $contact: String) {
+  updateTicket(id: $id, title: $title, issue: $issue, status: $status, contact: $contact) {
+    ...TicketsFields
+  }
+}
+
+mutation deleteTicket($id: ID!) {
+  deleteTicket(id: $id){
+    id
+  }
+}

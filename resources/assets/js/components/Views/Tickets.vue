@@ -90,7 +90,7 @@
 
 <script>
 
-import Api from '@/api/ticket.js'
+import {getTickets, getTicket, createTicket, updateTicket, deleteTicket} from '@/queries/ticket.gql'
 
 export default {
     inject: ['$validator'],
@@ -127,22 +127,22 @@ export default {
     apollo: {
       tickets: {
         query: getTickets
+      },
+      ticket: {
+        query: getTicket,
+        variables() {
+          return {
+            id: this.ticket.id
+          }
+        },
+        deep: true,
+        skip:true
       }
-    },
-    created() {
-        Api.getTickets()
-        .then(({ data }) => {
-            this.tickets = data
-        })
-        .catch(error => {
-            console.error(error)
-            this.notify('Could not load Tickets', 'error')
-        })
     },
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'New Ticket' : 'Edit Ticket'
+          return this.editedIndex === -1 ? 'New Ticket' : 'Edit Ticket'
         }
     },
 
@@ -154,6 +154,7 @@ export default {
     methods: {
         editItem (item) {
             this.editedIndex = this.tickets.indexOf(item)
+            this.$apollo.queries.ticket.skip = false
             this.ticket = Object.assign({}, item)
             this.dialog = true
         },
@@ -162,16 +163,24 @@ export default {
           if (confirm('Are you sure you want to delete this item?'))
           {
 
-            let index = this.tickets.indexOf(item)
+            this.$apollo.mutate({
+              mutation: deleteTicket,
+              variables: {
+                id: item.id
+              },
+              update: (store, { data: { deleteTicket } }) => {
 
-            Api.deleteTicket(item.id)
+                const data = store.readQuery({ query: getTickets })
+                const index = data.tickets.indexOf(item)
+                data.tickets.splice(index, 1)
+                store.writeQuery({ query: getTickets, data })
+              }
+            })
             .then(() => {
-              this.tickets.splice(index, 1)
               this.notify('The ticket was deleted successfully', 'success')
-
             })
             .catch((error) => {
-              console.error(error)
+              console.error({error})
               this.notify('There was an error deleting the ticket.', 'error')
             })
             
@@ -180,6 +189,7 @@ export default {
 
         close () {
             this.dialog = false
+            this.$apollo.queries.ticket.skip = true
             setTimeout(() => {
                 this.ticket = Object.assign({}, this.defaults)
                 this.editedIndex = -1
@@ -187,28 +197,53 @@ export default {
         },
 
         submit() {
-            if (this.editedIndex > -1)
-            {
-                Api.editTicket(this.ticket.id, this.ticket)
-                .then(({ data }) => {
-                    Object.assign(this.tickets[this.editedIndex], this.ticket)
-                    this.notify('The ticket was modified successfully', 'success')
+            if (this.editedIndex > -1) {
+
+                this.$apollo.mutate({
+                  mutation: updateTicket,
+                  variables: this.ticket,
+                  optimisticResponse: {
+                    __typename: 'Mutation',
+                    updateTicket: {
+                      __typename: 'Ticket',
+                      ...this.ticket
+                    }
+                  }
                 })
-                .catch(response => {
-                    console.error(response)
-                    this.notify('There was an error editting the ticket', 'error')
+                .then(() => {
+                  this.notify('The ticket was modified successfully', 'success')
                 })
+                .catch(error => {
+                  this.notify('There was an error editting the ticket', 'error')
+                  console.log({error})
+                })
+
             } else {
 
-                Api.addTicket(this.ticket)
-                .then(({ data }) => {
-                    this.tickets.push(data)
-                    this.notify('The ticket was added successfully', 'success')
-                    
+                this.$apollo.mutate({
+                  mutation: createTicket,
+                  variables: this.ticket,
+                  update: (store, { data: { createTicket } }) => {
+
+                    const data = store.readQuery({ query: getTickets })
+                    data.tickets.push(createTicket)
+                    store.writeQuery({ query: getTickets, data })
+                  },
+                  optimisticResponse: {
+                    __typename: 'Mutation',
+                    createTicket: {
+                      __typename: 'Ticket',
+                      id: -1,
+                      ...this.ticket
+                    }
+                  },
                 })
-                .catch(response => {
-                    console.error(response)
-                    this.notify('There was an error adding the ticket', 'error')
+                .then(() => {
+                  this.notify('The ticket was added successfully', 'success')
+                })
+                .catch(error => {
+                  this.notify('There was an error adding the ticket', 'error')
+                  console.log({error})
                 })
             }
 
