@@ -109,6 +109,15 @@ trait InteractsWithTenancy
     protected function activateTenant()
     {
         app(Environment::class)->tenant($this->website);
+
+        $this->connection->get()->beginTransaction();
+    }
+
+    protected function rollbackTenant()
+    {
+        if ($this->connection->exists() && $this->connection->get()->transactionLevel() > 0) {
+            $this->connection->get()->rollBack();
+        }
     }
 
     /**
@@ -139,6 +148,8 @@ trait InteractsWithTenancy
 
     protected function cleanUpTenancy()
     {
+        $this->rollbackTenant();
+
         $this->connection->purge();
 
         if ($this->connection->system()->getConfig('driver') !== 'pgsql') {
