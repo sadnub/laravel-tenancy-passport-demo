@@ -8,6 +8,7 @@
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
         "hyn/multi-tenant": "5.3.*",
+        "joselfonseca/lighthouse-graphql-passport-auth": "^1.0",
         "laravel/framework": "5.7.*",
         "laravel/passport": "7.*",
         "laravel/tinker": "^1.0",

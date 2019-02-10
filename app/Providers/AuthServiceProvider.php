@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
+use Laravel\Passport\Console\InstallCommand;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,15 +27,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        \Laravel\Passport\Passport::routes(null, ['middleware' => 'tenancy.enforce']);
+        Passport::routes();
         
         $this->commands([
-            \Laravel\Passport\Console\InstallCommand::class,
-            \Laravel\Passport\Console\ClientCommand::class,
-            \Laravel\Passport\Console\KeysCommand::class,
+            InstallCommand::class,
         ]);
         
-        \Laravel\Passport\Passport::tokensExpireIn(\Carbon\Carbon::now()->addMinutes(10));
-        \Laravel\Passport\Passport::refreshTokensExpireIn(\Carbon\Carbon::now()->addDays(1));
+        Passport::tokensExpireIn(\Carbon\Carbon::now()->addMinutes(10));
+        Passport::refreshTokensExpireIn(\Carbon\Carbon::now()->addDays(1));
     }
 }
