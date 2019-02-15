@@ -6,9 +6,7 @@
             <v-toolbar-title>Login</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <form id="login_form" method="POST" action="/login" aria-label="Login">
-            
-            <input type="hidden" name="_token" :value="csrf_token">
+          <form @submit="validate" aria-label="Login">
             
             <v-layout row>
               <v-flex xs12>
@@ -34,7 +32,7 @@
               </v-flex>
             </v-layout>
 
-            <v-btn color="primary" @click="validate">Login</v-btn>
+            <v-btn color="primary" type="submit" @click="validate">Login</v-btn>
             <router-link :to="{name: 'auth.email'}">Forgot Password?</router-link>
           </form>
         </v-card-text>
@@ -49,21 +47,21 @@
     inject: ['$validator'],
     data: () => ({
       email: '',
-      password: ''
+      password: '',
+      error: null
     }),
-    computed: {
-      csrf_token() {
-        let token = document.head.querySelector('meta[name="csrf-token"]')
-        return token.content
-      }
-    },
     methods: {
       validate() {
         this.$validator.validateAll().then((result) => {
           if (result) {
             
-            //Manually submit form if not errors
-            document.getElementById("login_form").submit()
+            this.$auth.login({email: this.email, password: this.password})
+            .then(response => {
+              this.$router.push({name: dashboard})
+            })
+            .catch(error => {
+              this.error = "Username or password is incorrect"
+            })
           }
         })
       }

@@ -10,21 +10,21 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "apollo-cache-inmemory": "^1.4.2",
-        "apollo-client": "^2.4.12",
-        "apollo-link": "^1.2.6",
-        "apollo-link-http": "^1.5.9",
+        "apollo-cache-inmemory": "^1.4.3",
+        "apollo-client": "^2.4.13",
+        "apollo-link": "^1.2.8",
+        "apollo-link-http": "^1.5.11",
         "axios": "^0.18",
         "cross-env": "^5.1",
         "graphql": "^14.1.1",
         "graphql-tag": "^2.10.1",
         "laravel-mix": "^4.0.14",
-        "vee-validate": "^2.1.5",
-        "vue": "^2.5.22",
-        "vue-apollo": "^3.0.0-beta.27",
+        "vee-validate": "^2.1.7",
+        "vue": "^2.6.6",
+        "vue-apollo": "^3.0.0-beta.28",
         "vue-router": "^3.0.2",
-        "vue-template-compiler": "^2.5.22",
-        "vuetify": "^1.4.2"
+        "vue-template-compiler": "^2.6.6",
+        "vuetify": "^1.5.1"
     },
     "dependencies": {}
 }

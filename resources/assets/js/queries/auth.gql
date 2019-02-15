@@ -1,0 +1,40 @@
+mutation login($data: LoginInput) {
+  login(data: $data) {
+    access_token
+    refresh_token
+    expires_in
+    token_type
+  }
+}
+
+mutation refresh($data: RefreshTokeninput) {
+  refresh_token(data: $data) {
+    access_token
+    refresh_token
+    expires_in
+    token_type
+  }
+}
+
+mutation logout { 
+  logout {
+    status
+    message
+  }
+}
+
+mutation forgotPassword($data: ForgotPasswordInput!) {
+  forgotPassword(data: $data) {
+    status
+    message
+  }
+}
+
+mutation updateForgottenPassword($data: NewPasswordWithCodeInput!) {
+  forgotPassword(data: $data) {
+    email
+    token
+    password
+    password_confirmation
+  }
+}
