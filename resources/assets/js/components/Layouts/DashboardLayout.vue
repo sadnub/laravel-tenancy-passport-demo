@@ -56,7 +56,7 @@
       data: () => ({
           drawer: null,
           links: links
-      })
+      }),
       methods: {
           logout() {
               this.$auth.logout().then(response => {

@@ -116,7 +116,6 @@
 
 <script>
 
-  import Auth from '@/api/auth.js'
   import { Validator } from 'vee-validate'
 
   export default {
@@ -129,6 +128,8 @@
         password: '',
         passsword_confirmation: ''
       },
+
+      tenantUrl: '.app.itplog.com',
 
       //Dialog Data
       url: null,
@@ -154,11 +155,15 @@
         })
       },
       submit(){
-        Auth.register(this.input).then(({data}) => {
+
+        const input = this.input
+        input.fqdn += this.tenantUrl
+
+        this.$auth.register(input).then(({data: {register}}) => {
 
           this.loading = false
-          this.message = data.message
-          this.url = data.redirect
+          this.message = register.message
+          this.url = register.redirect
 
         }).catch(error => {
 
@@ -176,11 +181,17 @@
 
         this.validating = true
 
-        return Auth.checkDomain({fqdn: value}).then(({data}) => {
+        return this.$auth.checkDomain(value + this.tenantUrl)
+        .then(({data: {checkDomain} }) => {
 
           this.validating = false
 
-          return data
+          return {
+            valid: checkDomain.valid,
+            data: {
+              message: checkDomain.message
+            }
+          }
           
         })
         .catch(error => {

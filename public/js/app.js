@@ -7497,8 +7497,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 //
 //
 //
@@ -7615,7 +7614,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
@@ -7628,6 +7626,7 @@ __webpack_require__.r(__webpack_exports__);
         password: '',
         passsword_confirmation: ''
       },
+      tenantUrl: '.app.itplog.com',
       //Dialog Data
       url: null,
       message: '',
@@ -7654,11 +7653,13 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this2 = this;
 
-      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].register(this.input).then(function (_ref) {
-        var data = _ref.data;
+      var input = this.input;
+      input.fqdn += this.tenantUrl;
+      this.$auth.register(input).then(function (_ref) {
+        var register = _ref.data.register;
         _this2.loading = false;
-        _this2.message = data.message;
-        _this2.url = data.redirect;
+        _this2.message = register.message;
+        _this2.url = register.redirect;
       }).catch(function (error) {
         _this2.loading = false;
         _this2.show = false;
@@ -7672,19 +7673,22 @@ __webpack_require__.r(__webpack_exports__);
     //Unique fqdn check function
     var isUnique = function isUnique(value) {
       _this3.validating = true;
-      return _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].checkDomain({
-        fqdn: value
-      }).then(function (_ref2) {
-        var data = _ref2.data;
+      return _this3.$auth.checkDomain(value + _this3.tenantUrl).then(function (_ref2) {
+        var checkDomain = _ref2.data.checkDomain;
         _this3.validating = false;
-        return data;
+        return {
+          valid: checkDomain.valid,
+          data: {
+            message: checkDomain.message
+          }
+        };
       }).catch(function (error) {
         _this3.validating = false;
       });
     }; //Extend Validator instance with new validation function
 
 
-    vee_validate__WEBPACK_IMPORTED_MODULE_1__["Validator"].extend("unique", {
+    vee_validate__WEBPACK_IMPORTED_MODULE_0__["Validator"].extend("unique", {
       validate: isUnique,
       getMessage: function getMessage(field, params, data) {
         return data.message;
@@ -7704,7 +7708,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
 //
 //
 //
@@ -7748,7 +7751,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
   data: function data() {
@@ -7779,11 +7781,10 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this2 = this;
 
-      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].emailLink(this.input).then(function (_ref) {
-        var data = _ref.data;
-        console.log(data);
-        _this2.status = data.status;
-        _this2.message = data.message;
+      this.$auth.forgotPassword(this.input).then(function (_ref) {
+        var forgotPassword = _ref.data;
+        _this2.status = forgotPassword.status;
+        _this2.message = forgotPassword.message;
         _this2.loading = false;
         _this2.show = true;
       }).catch(function (error) {
@@ -7804,7 +7805,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/api/auth.js */ "./resources/assets/js/api/auth.js");
 //
 //
 //
@@ -7884,7 +7884,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
   props: ['token'],
@@ -7920,10 +7919,10 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this2 = this;
 
-      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].resetPassword(this.input).then(function (_ref) {
-        var data = _ref.data;
-        _this2.message = data.message;
-        _this2.status = data.status;
+      this.$auth.resetForgottenPassword(this.input).then(function (_ref) {
+        var updateForgottenPassword = _ref.data.updateForgottenPassword;
+        _this2.message = updateForgottenPassword.message;
+        _this2.status = updateForgottenPassword.status;
         _this2.loading = false;
         _this2.show = true;
 
@@ -8048,9 +8047,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -8060,15 +8056,15 @@ __webpack_require__.r(__webpack_exports__);
       links: _sidebarLinks_js__WEBPACK_IMPORTED_MODULE_0__["default"]
     };
   },
-  computed: {
-    token: function token() {
-      var token = document.head.querySelector('meta[name="csrf-token"]');
-      return token.content;
-    }
-  },
   methods: {
     logout: function logout() {
-      document.getElementById('logout-form').submit();
+      var _this = this;
+
+      this.$auth.logout().then(function (response) {
+        _this.$router.push({
+          name: login
+        });
+      });
     }
   }
 });
@@ -23891,27 +23887,7 @@ var render = function() {
                   _c(
                     "v-list-tile",
                     { on: { click: _vm.logout } },
-                    [
-                      _c("v-list-tile-title", [_vm._v("Logout")]),
-                      _vm._v(" "),
-                      _c(
-                        "form",
-                        {
-                          staticStyle: { display: "none" },
-                          attrs: {
-                            id: "logout-form",
-                            action: "/logout",
-                            method: "POST"
-                          }
-                        },
-                        [
-                          _c("input", {
-                            attrs: { type: "hidden", name: "_token" },
-                            domProps: { value: _vm.token }
-                          })
-                        ]
-                      )
-                    ],
+                    [_c("v-list-tile-title", [_vm._v("Logout")])],
                     1
                   )
                 ],
@@ -65559,34 +65535,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/assets/js/api/auth.js":
-/*!*****************************************!*\
-  !*** ./resources/assets/js/api/auth.js ***!
-  \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _config_axios_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/config/axios.js */ "./resources/assets/js/config/axios.js");
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  register: function register(data) {
-    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('register', data);
-  },
-  emailLink: function emailLink(data) {
-    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('password/email', data);
-  },
-  resetPassword: function resetPassword(data) {
-    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('password/reset', data);
-  },
-  checkDomain: function checkDomain(data) {
-    return _config_axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].post('checkDomain', data);
-  }
-});
-
-/***/ }),
-
 /***/ "./resources/assets/js/app.js":
 /*!************************************!*\
   !*** ./resources/assets/js/app.js ***!
@@ -65636,7 +65584,7 @@ var vm = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   render: function render(h) {
     return h(_App__WEBPACK_IMPORTED_MODULE_5__["default"]);
   },
-  apolloProvider: _config_apollo_js__WEBPACK_IMPORTED_MODULE_7__["default"],
+  apolloProvider: _config_apollo_js__WEBPACK_IMPORTED_MODULE_7__["apolloProvider"],
   router: router
 });
 
@@ -66324,11 +66272,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************!*\
   !*** ./resources/assets/js/config/apollo.js ***!
   \**********************************************/
-/*! exports provided: default */
+/*! exports provided: Apollo, apolloProvider */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Apollo", function() { return Apollo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apolloProvider", function() { return apolloProvider; });
 /* harmony import */ var apollo_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! apollo-client */ "./node_modules/apollo-client/index.js");
 /* harmony import */ var apollo_link_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! apollo-link-http */ "./node_modules/apollo-link-http/lib/bundle.esm.js");
 /* harmony import */ var apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! apollo-cache-inmemory */ "./node_modules/apollo-cache-inmemory/lib/index.js");
@@ -66349,13 +66299,13 @@ var httpLink = new apollo_link_http__WEBPACK_IMPORTED_MODULE_1__["HttpLink"]({
 });
 var cache = new apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_2__["InMemoryCache"](); // Create the apollo client
 
-var apollo = new apollo_client__WEBPACK_IMPORTED_MODULE_0__["ApolloClient"]({
+var Apollo = new apollo_client__WEBPACK_IMPORTED_MODULE_0__["ApolloClient"]({
   link: httpLink,
   cache: cache,
   connectToDevTools: true
 });
-/* harmony default export */ __webpack_exports__["default"] = (new vue_apollo__WEBPACK_IMPORTED_MODULE_3__["default"]({
-  defaultClient: apollo,
+var apolloProvider = new vue_apollo__WEBPACK_IMPORTED_MODULE_3__["default"]({
+  defaultClient: Apollo,
   // Global error handler for all smart queries and subscriptions
   errorHandler: function errorHandler(_ref) {
     var networkError = _ref.networkError,
@@ -66374,7 +66324,7 @@ var apollo = new apollo_client__WEBPACK_IMPORTED_MODULE_0__["ApolloClient"]({
       console.log(graphQLErrors);
     }
   }
-}));
+});
 
 /***/ }),
 
@@ -66438,16 +66388,20 @@ instance.interceptors.response.use(function (response) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/queries/auth.gql */ "./resources/assets/js/queries/auth.gql");
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/config/apollo.js */ "./resources/assets/js/config/apollo.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 var Plugin = {
   install: function install(Vue) {
+    var _Vue$prototype$$auth;
+
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     //Requires a mechanism to set a cookie using $cookie instance property
-    //Requires Vue Apollo to be installed
-    var Cookie = Vue.prototype.$cookie;
-    var Apollo = Vue.prototype.$apollo; //Add $auth api methods
+    var Cookie = Vue.prototype.$cookie; //Add $auth api methods
 
-    Vue.prototype.$auth = {
+    Vue.prototype.$auth = (_Vue$prototype$$auth = {
       //Holds cache for tokens
       store: {
         access_token: null,
@@ -66469,78 +66423,95 @@ var Plugin = {
           return false;
         }
       },
-      //Attempts to log the user in with supplied credentials
-      login: function login(data) {
-        var _this = this;
-
-        return Apollo.mutate({
-          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["login"],
+      register: function register(data) {
+        return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["register"],
           variables: {
             data: data
           }
-        }).then(function (_ref) {
-          var login = _ref.data.login;
-
-          _this.setTokens(login.refresh_token, login.access_token, login.expires_in);
         });
       },
-      //Logs the user out and clears local tokens
-      logout: function logout() {
-        this.store.access_token = null;
-        this.store.expiresIn = null;
-        this.store.refresh_token = null;
-        Cookie.delete('refresh_token');
-        return Apollo.mutate({
-          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["logout"]
-        });
-      },
-      //Uses a valid refresh token to obtain an access token
-      refresh: function refresh() {
-        var _this2 = this;
-
-        var refresh_token = this.getRefreshToken();
-
-        if (refresh_token === null) {
-          return null;
-        }
-
-        return Apollo.mutate({
-          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["refresh"],
+      checkDomain: function checkDomain(data) {
+        return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["checkDomain"],
           variables: {
-            data: {
-              refresh_token: refresh_token
-            }
+            fqdn: data
           }
-        }).then(function (_ref2) {
-          var refresh_token = _ref2.data.refresh_token;
-
-          _this2.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in);
         });
       },
-      //Checks for a cached refresh_token and then a cookie
-      getRefreshToken: function getRefreshToken() {
-        if (this.store.refresh_token !== null) {
-          return this.store.refresh_token;
-        } else {
-          return Cookie.get('refresh_token');
-        }
-      },
-      //Sets both access and refresh tokens in the cache and cookie
-      setTokens: function setTokens(refresh, access, expires) {
-        this.setAccessToken(access, expires);
-        this.setRefreshToken(refresh);
-      },
-      //Sets access token in the cache
-      setAccessToken: function setAccessToken(token, expires) {
-        this.store.access_token = token;
-        this.store.expiresIn = expires;
-      },
-      //Sets refresh token in cache and cookie
-      setRefreshToken: function setRefreshToken(token) {
-        Cookie.set('refresh_token', token);
-        this.store.refresh_token = token;
+      resetForgottenPassword: function resetForgottenPassword(data) {
+        return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["updatePassword"],
+          variables: {
+            data: data
+          }
+        });
       }
-    };
+    }, _defineProperty(_Vue$prototype$$auth, "resetForgottenPassword", function resetForgottenPassword(data) {
+      return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+        mutation: updateForgottenPassword,
+        variables: {
+          data: data
+        }
+      });
+    }), _defineProperty(_Vue$prototype$$auth, "login", function login(data) {
+      var _this = this;
+
+      return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+        mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["login"],
+        variables: {
+          data: data
+        }
+      }).then(function (_ref) {
+        var login = _ref.data.login;
+
+        _this.setTokens(login.refresh_token, login.access_token, login.expires_in);
+      });
+    }), _defineProperty(_Vue$prototype$$auth, "logout", function logout() {
+      this.store.access_token = null;
+      this.store.expiresIn = null;
+      this.store.refresh_token = null;
+      Cookie.delete('refresh_token');
+      return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+        mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["logout"]
+      });
+    }), _defineProperty(_Vue$prototype$$auth, "refresh", function refresh() {
+      var _this2 = this;
+
+      var refresh_token = this.getRefreshToken();
+
+      if (refresh_token === null) {
+        return null;
+      }
+
+      return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+        mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["refresh"],
+        variables: {
+          data: {
+            refresh_token: refresh_token
+          }
+        }
+      }).then(function (_ref2) {
+        var refresh_token = _ref2.data.refresh_token;
+
+        _this2.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in);
+      });
+    }), _defineProperty(_Vue$prototype$$auth, "getRefreshToken", function getRefreshToken() {
+      if (this.store.refresh_token !== null) {
+        return this.store.refresh_token;
+      } else {
+        return Cookie.get('refresh_token');
+      }
+    }), _defineProperty(_Vue$prototype$$auth, "setTokens", function setTokens(refresh, access, expires) {
+      this.setAccessToken(access, expires);
+      this.setRefreshToken(refresh);
+    }), _defineProperty(_Vue$prototype$$auth, "setAccessToken", function setAccessToken(token, expires) {
+      this.store.access_token = token;
+      this.store.expiresIn = expires;
+    }), _defineProperty(_Vue$prototype$$auth, "setRefreshToken", function setRefreshToken(token) {
+      Cookie.set('refresh_token', token);
+      this.store.refresh_token = token;
+    }), _Vue$prototype$$auth);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (Plugin);
@@ -66555,8 +66526,8 @@ var Plugin = {
 /***/ (function(module, exports) {
 
 
-    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"refresh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RefreshTokeninput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logout"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"forgotPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ForgotPasswordInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forgotPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateForgottenPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NewPasswordWithCodeInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forgotPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":621}};
-    doc.loc.source = {"body":"mutation login($data: LoginInput) {\n  login(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation refresh($data: RefreshTokeninput) {\n  refresh_token(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation logout { \n  logout {\n    status\n    message\n  }\n}\n\nmutation forgotPassword($data: ForgotPasswordInput!) {\n  forgotPassword(data: $data) {\n    status\n    message\n  }\n}\n\nmutation updateForgottenPassword($data: NewPasswordWithCodeInput!) {\n  forgotPassword(data: $data) {\n    email\n    token\n    password\n    password_confirmation\n  }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"refresh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RefreshTokeninput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logout"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"forgotPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ForgotPasswordInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forgotPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NewPasswordWithCodeInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateForgottenPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"fqdn"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"checkDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkDomain"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fqdn"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"valid"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":861}};
+    doc.loc.source = {"body":"mutation login($data: LoginInput) {\n  login(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation refresh($data: RefreshTokeninput) {\n  refresh_token(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation logout { \n  logout {\n    status\n    message\n  }\n}\n\nmutation forgotPassword($data: ForgotPasswordInput!) {\n  forgotPassword(data: $data) {\n    status\n    message\n  }\n}\n\nmutation updatePassword($data: NewPasswordWithCodeInput!) {\n  updateForgottenPassword(data: $data) {\n    email\n    token\n    password\n    password_confirmation\n  }\n}\n\nmutation register($data: RegisterInput!) {\n  register(data: $data) {\n    name\n    email\n    fqdn\n    password\n    password_confirmation\n  }\n}\n\nmutation checkDomain($fqdn: String!) {\n  checkDomain(fqdn: $fqdn) {\n    valid\n    message\n  }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
   
 
     var names = {};
@@ -66682,7 +66653,11 @@ var Plugin = {
         
         module.exports["forgotPassword"] = oneQuery(doc, "forgotPassword");
         
-        module.exports["updateForgottenPassword"] = oneQuery(doc, "updateForgottenPassword");
+        module.exports["updatePassword"] = oneQuery(doc, "updatePassword");
+        
+        module.exports["register"] = oneQuery(doc, "register");
+        
+        module.exports["checkDomain"] = oneQuery(doc, "checkDomain");
         
 
 

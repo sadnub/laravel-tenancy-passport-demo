@@ -30,8 +30,8 @@ mutation forgotPassword($data: ForgotPasswordInput!) {
   }
 }
 
-mutation updateForgottenPassword($data: NewPasswordWithCodeInput!) {
-  forgotPassword(data: $data) {
+mutation updatePassword($data: NewPasswordWithCodeInput!) {
+  updateForgottenPassword(data: $data) {
     email
     token
     password
@@ -46,5 +46,12 @@ mutation register($data: RegisterInput!) {
     fqdn
     password
     password_confirmation
+  }
+}
+
+mutation checkDomain($fqdn: String!) {
+  checkDomain(fqdn: $fqdn) {
+    valid
+    message
   }
 }

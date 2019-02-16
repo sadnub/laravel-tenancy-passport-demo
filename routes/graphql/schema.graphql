@@ -4,14 +4,14 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 "A date string with format 'Y-m-d', e.g. '2011-05-23'."
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
-type Query {
+type Query @protect {
     users: [User!]! @all(model: "App\\User")
     user(id: ID @eq): User @find(model: "App\\User")
     tickets: [Ticket!]! @all(model: "App\\Ticket")
     ticket(id: ID @eq): Ticket @find(model: "App\\Ticket")
 }
 
-type Mutation {
+type Mutation @protect {
     createUser(
         name: String @rules(apply: ["required"])
         email: String @rules(apply: ["required", "email", "unique:users,email"])

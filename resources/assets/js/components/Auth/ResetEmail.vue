@@ -42,7 +42,6 @@
 </template>
 
 <script>
-  import Auth from '@/api/auth.js'
 
 	export default {
     inject: ['$validator'],
@@ -70,12 +69,10 @@
         })
       },
       submit(){
-        Auth.emailLink(this.input).then(({data}) => {
+        this.$auth.forgotPassword(this.input).then(({data: forgotPassword}) => {
 
-          console.log(data)
-
-          this.status = data.status
-          this.message = data.message
+          this.status = forgotPassword.status
+          this.message = forgotPassword.message
           this.loading = false
           this.show = true
 

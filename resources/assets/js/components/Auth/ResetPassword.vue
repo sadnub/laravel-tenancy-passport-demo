@@ -78,7 +78,6 @@
 </template>
 
 <script>
-  import Auth from '@/api/auth.js'
 
   export default {
     inject: ['$validator'],
@@ -115,10 +114,10 @@
         })
       },
       submit() {
-        Auth.resetPassword(this.input).then(({data}) => {
+        this.$auth.resetForgottenPassword(this.input).then(({data: {updateForgottenPassword}}) => {
 
-          this.message = data.message
-          this.status = data.status
+          this.message = updateForgottenPassword.message
+          this.status = updateForgottenPassword.status
           this.loading = false
           this.show = true
 

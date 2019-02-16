@@ -17,15 +17,15 @@ const httpLink = new HttpLink({
 const cache = new InMemoryCache();
 
 // Create the apollo client
-const apollo = new ApolloClient({
+export const Apollo = new ApolloClient({
   link: httpLink,
   cache,
   connectToDevTools: true,
 })
 
 
-export default new VueApollo({
-  defaultClient: apollo,
+export const apolloProvider = new VueApollo({
+  defaultClient: Apollo,
 
   // Global error handler for all smart queries and subscriptions
   errorHandler: ({networkError, graphQLErrors}) => {

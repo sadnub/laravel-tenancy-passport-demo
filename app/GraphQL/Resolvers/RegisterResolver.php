@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GraphQL\Resolvers
+namespace App\GraphQL\Resolvers;
 
 use App\User;
 use App\Tenant;

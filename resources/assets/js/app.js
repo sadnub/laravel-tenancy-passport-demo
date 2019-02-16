@@ -6,7 +6,7 @@ import VeeValidate from 'vee-validate'
 import VueApollo from 'vue-apollo'
 import App from '@/App'
 import routes from '@/routes.js'
-import apolloProvider from '@/config/apollo.js'
+import {apolloProvider} from '@/config/apollo.js'
 import VueAuth from '@/plugins/vue-auth-graphql'
 
 //Load Plugins

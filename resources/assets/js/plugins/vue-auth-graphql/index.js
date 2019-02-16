@@ -1,13 +1,12 @@
 
-import {login, refresh, logout} from '@/queries/auth.gql'
+import {login, refresh, logout, register, checkDomain, updatePassword, forgotPassword} from '@/queries/auth.gql'
+import {Apollo} from '@/config/apollo.js'
 
 const Plugin = {
   install (Vue, options = {}) {
 
     //Requires a mechanism to set a cookie using $cookie instance property
-    //Requires Vue Apollo to be installed
     const Cookie = Vue.prototype.$cookie
-    const Apollo = Vue.prototype.$apollo
 
     //Add $auth api methods
     Vue.prototype.$auth = {
@@ -35,6 +34,42 @@ const Plugin = {
         } else {
           return false
         }
+      },
+
+      register(data) {
+        return Apollo.mutate({
+          mutation: register,
+          variables: {
+            data: data
+          }
+        })
+      },
+
+      checkDomain(data) {
+        return Apollo.mutate({
+          mutation: checkDomain,
+          variables: {
+            fqdn: data
+          }
+        })
+      },
+
+      resetForgottenPassword(data) {
+        return Apollo.mutate({
+          mutation: updatePassword,
+          variables: {
+            data: data
+          }
+        })
+      },
+
+      resetForgottenPassword(data) {
+        return Apollo.mutate({
+          mutation: updateForgottenPassword,
+          variables: {
+            data: data
+          }
+        })
       },
 
       //Attempts to log the user in with supplied credentials
