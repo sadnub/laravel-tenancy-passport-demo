@@ -1,13 +1,13 @@
 
-//Requires a mechanism to set a cookie using $cookie instance property
-//Requires Vue Apollo to be installed
-const Cookie = Vue.prototype.$cookie
-const Apollo = Vue.prototype.$apollo
-
 import {login, refresh, logout} from '@/queries/auth.gql'
 
 const Plugin = {
   install (Vue, options = {}) {
+
+    //Requires a mechanism to set a cookie using $cookie instance property
+    //Requires Vue Apollo to be installed
+    const Cookie = Vue.prototype.$cookie
+    const Apollo = Vue.prototype.$apollo
 
     //Add $auth api methods
     Vue.prototype.$auth = {

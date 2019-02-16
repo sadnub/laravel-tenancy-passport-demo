@@ -38,3 +38,13 @@ mutation updateForgottenPassword($data: NewPasswordWithCodeInput!) {
     password_confirmation
   }
 }
+
+mutation register($data: RegisterInput!) {
+  register(data: $data) {
+    name
+    email
+    fqdn
+    password
+    password_confirmation
+  }
+}

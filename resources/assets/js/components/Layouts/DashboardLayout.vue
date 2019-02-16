@@ -34,9 +34,6 @@
                 <v-list>
                     <v-list-tile @click="logout">
                         <v-list-tile-title>Logout</v-list-tile-title>
-                        <form id="logout-form" action="/logout" method="POST" style="display: none;">
-                            <input type="hidden" name="_token" :value="token">
-                        </form>
                     </v-list-tile>
                 </v-list>
             </v-menu>
@@ -56,20 +53,16 @@
     import axios from '@/config/axios.js'
 
     export default {
-        data: () => ({
-            drawer: null,
-            links: links
-        }),
-        computed: {
-            token() {
-                let token = document.head.querySelector('meta[name="csrf-token"]');
-                return token.content
-            }
-        },
-        methods: {
-            logout() {
-                document.getElementById('logout-form').submit()
-            }
-        }
+      data: () => ({
+          drawer: null,
+          links: links
+      })
+      methods: {
+          logout() {
+              this.$auth.logout().then(response => {
+                  this.$router.push({name: login})
+              })
+          }
+      }
     }
 </script>
