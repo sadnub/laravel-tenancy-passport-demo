@@ -32,7 +32,7 @@ class LoginResolver
         if (! $context->request->hasCookie('_token')) {
             
             $token = Auth::user()->createToken('Access Token')->accessToken;
-            Cookie::queue('_token', $token, Passport::personalAccessTokensExpireIn(), '/', $context->request->getHost(), false, true);
+            Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
 
         }
 

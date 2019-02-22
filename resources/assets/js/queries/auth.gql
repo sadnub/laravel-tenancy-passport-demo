@@ -2,15 +2,6 @@ mutation login($data: LoginInput) {
   login(data: $data)
 }
 
-mutation refresh($data: RefreshTokeninput) {
-  refresh_token(data: $data) {
-    access_token
-    refresh_token
-    expires_in
-    token_type
-  }
-}
-
 mutation logout { 
   logout {
     status

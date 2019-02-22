@@ -8,11 +8,6 @@ const Plugin = {
     //Add $auth api methods
     Vue.prototype.$auth = {
 
-      check() {
-        return Apollo.mutate({
-          mutation: check
-        })
-      },
       register(data) {
         return Apollo.mutate({
           mutation: register,
