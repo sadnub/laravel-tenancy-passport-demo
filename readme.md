@@ -31,6 +31,7 @@ Use the graphql branch for the article below.
 
 <a href="https://medium.com/@sadnub/migrating-to-graphql-on-laravel-with-lighthouse-42bd96d9d73?source=friends_link&sk=302fe4dc73338084b2102e428029feda" target="_blank">Migrating to GraphQL on Laravel with Lighthouse </a>
 
+<a href="https://medium.com/@sadnub/api-auth-and-graphql-in-laravel-d191e277560d?source=friends_link&sk=db92cce084137129dd39e38338c5a558" target="_blank">API Auth with GraphQL and Laravel</a>
 
 # Contribution
 If you found my article or this repo useful, please consider contributing so I can provide more helpful content!
