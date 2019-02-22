@@ -3839,6 +3839,132 @@ var DedupLink = (function (_super) {
 
 /***/ }),
 
+/***/ "./node_modules/apollo-link-error/lib/bundle.esm.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/apollo-link-error/lib/bundle.esm.js ***!
+  \**********************************************************/
+/*! exports provided: onError, ErrorLink */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onError", function() { return onError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorLink", function() { return ErrorLink; });
+/* harmony import */ var apollo_link__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! apollo-link */ "./node_modules/apollo-link/lib/bundle.esm.js");
+
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var onError = function (errorHandler) {
+    return new apollo_link__WEBPACK_IMPORTED_MODULE_0__["ApolloLink"](function (operation, forward) {
+        return new apollo_link__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (observer) {
+            var sub;
+            var retriedSub;
+            var retriedResult;
+            try {
+                sub = forward(operation).subscribe({
+                    next: function (result) {
+                        if (result.errors) {
+                            retriedResult = errorHandler({
+                                graphQLErrors: result.errors,
+                                response: result,
+                                operation: operation,
+                                forward: forward,
+                            });
+                            if (retriedResult) {
+                                retriedSub = retriedResult.subscribe({
+                                    next: observer.next.bind(observer),
+                                    error: observer.error.bind(observer),
+                                    complete: observer.complete.bind(observer),
+                                });
+                                return;
+                            }
+                        }
+                        observer.next(result);
+                    },
+                    error: function (networkError) {
+                        retriedResult = errorHandler({
+                            operation: operation,
+                            networkError: networkError,
+                            graphQLErrors: networkError.result && networkError.result.errors,
+                            forward: forward,
+                        });
+                        if (retriedResult) {
+                            retriedSub = retriedResult.subscribe({
+                                next: observer.next.bind(observer),
+                                error: observer.error.bind(observer),
+                                complete: observer.complete.bind(observer),
+                            });
+                            return;
+                        }
+                        observer.error(networkError);
+                    },
+                    complete: function () {
+                        if (!retriedResult) {
+                            observer.complete.bind(observer)();
+                        }
+                    },
+                });
+            }
+            catch (e) {
+                errorHandler({ networkError: e, operation: operation, forward: forward });
+                observer.error(e);
+            }
+            return function () {
+                if (sub)
+                    sub.unsubscribe();
+                if (retriedSub)
+                    sub.unsubscribe();
+            };
+        });
+    });
+};
+var ErrorLink = (function (_super) {
+    __extends(ErrorLink, _super);
+    function ErrorLink(errorHandler) {
+        var _this = _super.call(this) || this;
+        _this.link = onError(errorHandler);
+        return _this;
+    }
+    ErrorLink.prototype.request = function (operation, forward) {
+        return this.link.request(operation, forward);
+    };
+    return ErrorLink;
+}(apollo_link__WEBPACK_IMPORTED_MODULE_0__["ApolloLink"]));
+
+
+//# sourceMappingURL=bundle.esm.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/apollo-link-http-common/lib/bundle.esm.js":
 /*!****************************************************************!*\
   !*** ./node_modules/apollo-link-http-common/lib/bundle.esm.js ***!
@@ -7471,13 +7597,16 @@ __webpack_require__.r(__webpack_exports__);
       this.$validator.validateAll().then(function (result) {
         if (result) {
           _this.$auth.login({
-            email: _this.email,
+            username: _this.email,
             password: _this.password
           }).then(function (response) {
             _this.$router.push({
-              name: dashboard
+              name: 'dashboard'
             });
           }).catch(function (error) {
+            console.log({
+              error: error
+            });
             _this.error = "Username or password is incorrect";
           });
         }
@@ -7614,6 +7743,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   inject: ['$validator'],
@@ -7624,7 +7754,7 @@ __webpack_require__.r(__webpack_exports__);
         email: '',
         fqdn: '',
         password: '',
-        passsword_confirmation: ''
+        password_confirmation: ''
       },
       tenantUrl: '.app.itplog.com',
       //Dialog Data
@@ -7653,7 +7783,7 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var _this2 = this;
 
-      var input = this.input;
+      var input = Object.assign({}, this.input);
       input.fqdn += this.tenantUrl;
       this.$auth.register(input).then(function (_ref) {
         var register = _ref.data.register;
@@ -9724,6 +9854,186 @@ function isBuffer (obj) {
 function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/js-cookie/src/js.cookie.js":
+/*!*************************************************!*\
+  !*** ./node_modules/js-cookie/src/js.cookie.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * JavaScript Cookie v2.2.0
+ * https://github.com/js-cookie/js-cookie
+ *
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ * Released under the MIT license
+ */
+;(function (factory) {
+	var registeredInModuleLoader = false;
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		registeredInModuleLoader = true;
+	}
+	if (true) {
+		module.exports = factory();
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
+	}
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
+			}
+		}
+		return result;
+	}
+
+	function init (converter) {
+		function api (key, value, attributes) {
+			var result;
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			// Write
+
+			if (arguments.length > 1) {
+				attributes = extend({
+					path: '/'
+				}, api.defaults, attributes);
+
+				if (typeof attributes.expires === 'number') {
+					var expires = new Date();
+					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+					attributes.expires = expires;
+				}
+
+				// We're using "expires" because "max-age" is not supported by IE
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+				try {
+					result = JSON.stringify(value);
+					if (/^[\{\[]/.test(result)) {
+						value = result;
+					}
+				} catch (e) {}
+
+				if (!converter.write) {
+					value = encodeURIComponent(String(value))
+						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+				} else {
+					value = converter.write(value, key);
+				}
+
+				key = encodeURIComponent(String(key));
+				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+				key = key.replace(/[\(\)]/g, escape);
+
+				var stringifiedAttributes = '';
+
+				for (var attributeName in attributes) {
+					if (!attributes[attributeName]) {
+						continue;
+					}
+					stringifiedAttributes += '; ' + attributeName;
+					if (attributes[attributeName] === true) {
+						continue;
+					}
+					stringifiedAttributes += '=' + attributes[attributeName];
+				}
+				return (document.cookie = key + '=' + value + stringifiedAttributes);
+			}
+
+			// Read
+
+			if (!key) {
+				result = {};
+			}
+
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all. Also prevents odd result when
+			// calling "get()"
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var rdecode = /(%[0-9A-Z]{2})+/g;
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (!this.json && cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = parts[0].replace(rdecode, decodeURIComponent);
+					cookie = converter.read ?
+						converter.read(cookie, name) : converter(cookie, name) ||
+						cookie.replace(rdecode, decodeURIComponent);
+
+					if (this.json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					if (key === name) {
+						result = cookie;
+						break;
+					}
+
+					if (!key) {
+						result[name] = cookie;
+					}
+				} catch (e) {}
+			}
+
+			return result;
+		}
+
+		api.set = api;
+		api.get = function (key) {
+			return api.call(api, key);
+		};
+		api.getJSON = function () {
+			return api.apply({
+				json: true
+			}, [].slice.call(arguments));
+		};
+		api.defaults = {};
+
+		api.remove = function (key, attributes) {
+			api(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
+}));
 
 
 /***/ }),
@@ -22748,7 +23058,12 @@ var render = function() {
                   "form",
                   {
                     attrs: { "aria-label": "Login" },
-                    on: { submit: _vm.validate }
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.validate($event)
+                      }
+                    }
                   },
                   [
                     _c(
@@ -22904,7 +23219,15 @@ var render = function() {
                 [
                   _c(
                     "v-form",
-                    { attrs: { "aria-label": "Register" } },
+                    {
+                      attrs: { "aria-label": "Register" },
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.validate($event)
+                        }
+                      }
+                    },
                     [
                       _c(
                         "v-layout",
@@ -23152,7 +23475,11 @@ var render = function() {
                       _c(
                         "v-btn",
                         {
-                          attrs: { loading: _vm.loading, color: "primary" },
+                          attrs: {
+                            type: "submit",
+                            loading: _vm.loading,
+                            color: "primary"
+                          },
                           on: { click: _vm.validate }
                         },
                         [_vm._v("Submit")]
@@ -65567,13 +65894,13 @@ __webpack_require__.r(__webpack_exports__);
 
  //Load Plugins
 
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(_plugins_vue_auth_graphql__WEBPACK_IMPORTED_MODULE_8__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_2___default.a);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_3__["default"], {
   inject: false
 });
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_apollo__WEBPACK_IMPORTED_MODULE_4__["default"]);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(_plugins_vue_auth_graphql__WEBPACK_IMPORTED_MODULE_8__["default"]); //Router configuration
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_apollo__WEBPACK_IMPORTED_MODULE_4__["default"]); //Router configuration
 
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
@@ -66282,48 +66609,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var apollo_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! apollo-client */ "./node_modules/apollo-client/index.js");
 /* harmony import */ var apollo_link_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! apollo-link-http */ "./node_modules/apollo-link-http/lib/bundle.esm.js");
 /* harmony import */ var apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! apollo-cache-inmemory */ "./node_modules/apollo-cache-inmemory/lib/index.js");
-/* harmony import */ var vue_apollo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-apollo */ "./node_modules/vue-apollo/dist/vue-apollo.esm.js");
-/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/app.js */ "./resources/assets/js/app.js");
+/* harmony import */ var apollo_link_error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! apollo-link-error */ "./node_modules/apollo-link-error/lib/bundle.esm.js");
+/* harmony import */ var apollo_link__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! apollo-link */ "./node_modules/apollo-link/lib/bundle.esm.js");
+/* harmony import */ var vue_apollo__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-apollo */ "./node_modules/vue-apollo/dist/vue-apollo.esm.js");
+/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/app.js */ "./resources/assets/js/app.js");
 
 
 
 
 
-var token = document.head.querySelector('meta[name="csrf-token"]');
+
+
+var token = document.head.querySelector('meta[name="csrf-token"]').content; //Sets the headers using Apollo Http Link
+
 var httpLink = new apollo_link_http__WEBPACK_IMPORTED_MODULE_1__["HttpLink"]({
   headers: {
-    'X-CSRF-TOKEN': token.content,
+    'X-CSRF-TOKEN': token,
     'X-Requested-With': 'XMLHttpRequest',
     'Accept': 'application/json'
   }
-});
+}); //Sets a global error handler using the Apollo Error Link
+
+var errorLink = Object(apollo_link_error__WEBPACK_IMPORTED_MODULE_3__["onError"])(function (_ref) {
+  var graphQLErrors = _ref.graphQLErrors,
+      networkError = _ref.networkError;
+  if (graphQLErrors) graphQLErrors.map(function (_ref2) {
+    var message = _ref2.message,
+        locations = _ref2.locations,
+        path = _ref2.path;
+    return console.log("[GraphQL error]: Message: ".concat(message, ", Location: ").concat(locations, ", Path: ").concat(path));
+  });
+  if (networkError) console.log("[Network error]: ".concat(networkError));
+}); //Combines the Apollo Http and Error links
+
+var link = apollo_link__WEBPACK_IMPORTED_MODULE_4__["ApolloLink"].from([errorLink, httpLink]);
 var cache = new apollo_cache_inmemory__WEBPACK_IMPORTED_MODULE_2__["InMemoryCache"](); // Create the apollo client
 
 var Apollo = new apollo_client__WEBPACK_IMPORTED_MODULE_0__["ApolloClient"]({
-  link: httpLink,
+  link: link,
   cache: cache,
   connectToDevTools: true
 });
-var apolloProvider = new vue_apollo__WEBPACK_IMPORTED_MODULE_3__["default"]({
-  defaultClient: Apollo,
-  // Global error handler for all smart queries and subscriptions
-  errorHandler: function errorHandler(_ref) {
-    var networkError = _ref.networkError,
-        graphQLErrors = _ref.graphQLErrors;
-
-    if (networkError) {
-      // Redirect to Login on unauthenticated error
-      if (networkError.statusCode === 401) {
-        _app_js__WEBPACK_IMPORTED_MODULE_4__["vm"].$router.push({
-          name: 'auth.login'
-        });
-      }
-
-      console.log(networkError);
-    } else if (graphQLErrors) {
-      console.log(graphQLErrors);
-    }
-  }
+var apolloProvider = new vue_apollo__WEBPACK_IMPORTED_MODULE_5__["default"]({
+  defaultClient: Apollo
 });
 
 /***/ }),
@@ -66389,7 +66717,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/queries/auth.gql */ "./resources/assets/js/queries/auth.gql");
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/config/apollo.js */ "./resources/assets/js/config/apollo.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(js_cookie__WEBPACK_IMPORTED_MODULE_2__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -66398,19 +66729,11 @@ var Plugin = {
     var _Vue$prototype$$auth;
 
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    //Requires a mechanism to set a cookie using $cookie instance property
-    var Cookie = Vue.prototype.$cookie; //Add $auth api methods
-
+    //Add $auth api methods
     Vue.prototype.$auth = (_Vue$prototype$$auth = {
-      //Holds cache for tokens
-      store: {
-        access_token: null,
-        expiresIn: null,
-        refresh_token: null
-      },
       //Checks if access token is present
       check: function check() {
-        return this.store.access_token !== null;
+        return js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('access_token') !== null;
       },
       initiateAuth: function initiateAuth() {
         var refresh_token = this.getRefreshToken();
@@ -66455,28 +66778,20 @@ var Plugin = {
         }
       });
     }), _defineProperty(_Vue$prototype$$auth, "login", function login(data) {
-      var _this = this;
-
       return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
         mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["login"],
         variables: {
           data: data
         }
-      }).then(function (_ref) {
-        var login = _ref.data.login;
-
-        _this.setTokens(login.refresh_token, login.access_token, login.expires_in);
       });
     }), _defineProperty(_Vue$prototype$$auth, "logout", function logout() {
-      this.store.access_token = null;
-      this.store.expiresIn = null;
-      this.store.refresh_token = null;
-      Cookie.delete('refresh_token');
+      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.remove('refresh_token');
+      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.remove('access_token');
       return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
         mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["logout"]
       });
     }), _defineProperty(_Vue$prototype$$auth, "refresh", function refresh() {
-      var _this2 = this;
+      var _this = this;
 
       var refresh_token = this.getRefreshToken();
 
@@ -66491,26 +66806,24 @@ var Plugin = {
             refresh_token: refresh_token
           }
         }
-      }).then(function (_ref2) {
-        var refresh_token = _ref2.data.refresh_token;
+      }).then(function (_ref) {
+        var refresh_token = _ref.data.refresh_token;
 
-        _this2.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in);
+        _this.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in);
       });
     }), _defineProperty(_Vue$prototype$$auth, "getRefreshToken", function getRefreshToken() {
-      if (this.store.refresh_token !== null) {
-        return this.store.refresh_token;
-      } else {
-        return Cookie.get('refresh_token');
-      }
+      return js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('refresh_token');
     }), _defineProperty(_Vue$prototype$$auth, "setTokens", function setTokens(refresh, access, expires) {
       this.setAccessToken(access, expires);
       this.setRefreshToken(refresh);
     }), _defineProperty(_Vue$prototype$$auth, "setAccessToken", function setAccessToken(token, expires) {
-      this.store.access_token = token;
-      this.store.expiresIn = expires;
+      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('access_token', token, {
+        expires: expires
+      });
     }), _defineProperty(_Vue$prototype$$auth, "setRefreshToken", function setRefreshToken(token) {
-      Cookie.set('refresh_token', token);
-      this.store.refresh_token = token;
+      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('refresh_token', token, {
+        expires: 1
+      });
     }), _Vue$prototype$$auth);
   }
 };
@@ -66526,8 +66839,8 @@ var Plugin = {
 /***/ (function(module, exports) {
 
 
-    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"refresh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RefreshTokeninput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logout"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"forgotPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ForgotPasswordInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forgotPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NewPasswordWithCodeInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateForgottenPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"fqdn"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"checkDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkDomain"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fqdn"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"valid"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":861}};
-    doc.loc.source = {"body":"mutation login($data: LoginInput) {\n  login(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation refresh($data: RefreshTokeninput) {\n  refresh_token(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation logout { \n  logout {\n    status\n    message\n  }\n}\n\nmutation forgotPassword($data: ForgotPasswordInput!) {\n  forgotPassword(data: $data) {\n    status\n    message\n  }\n}\n\nmutation updatePassword($data: NewPasswordWithCodeInput!) {\n  updateForgottenPassword(data: $data) {\n    email\n    token\n    password\n    password_confirmation\n  }\n}\n\nmutation register($data: RegisterInput!) {\n  register(data: $data) {\n    name\n    email\n    fqdn\n    password\n    password_confirmation\n  }\n}\n\nmutation checkDomain($fqdn: String!) {\n  checkDomain(fqdn: $fqdn) {\n    valid\n    message\n  }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
+    var doc = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[]}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"refresh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RefreshTokeninput"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"refresh_token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"expires_in"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token_type"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"logout"},"variableDefinitions":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"forgotPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ForgotPasswordInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forgotPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updatePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NewPasswordWithCodeInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateForgottenPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"token"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"password_confirmation"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterInput"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"status"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"redirect"},"arguments":[],"directives":[]}]}}]}},{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"checkDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkDomain"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fqdn"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fqdn"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"valid"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"message"},"arguments":[],"directives":[]}]}}]}}],"loc":{"start":0,"end":759}};
+    doc.loc.source = {"body":"mutation login($data: LoginInput) {\n  login(data: $data)\n}\n\nmutation refresh($data: RefreshTokeninput) {\n  refresh_token(data: $data) {\n    access_token\n    refresh_token\n    expires_in\n    token_type\n  }\n}\n\nmutation logout { \n  logout {\n    status\n    message\n  }\n}\n\nmutation forgotPassword($data: ForgotPasswordInput!) {\n  forgotPassword(data: $data) {\n    status\n    message\n  }\n}\n\nmutation updatePassword($data: NewPasswordWithCodeInput!) {\n  updateForgottenPassword(data: $data) {\n    email\n    token\n    password\n    password_confirmation\n  }\n}\n\nmutation register($data: RegisterInput!) {\n  register(data: $data) {\n    status\n    message\n    redirect\n  }\n}\n\nmutation checkDomain($fqdn: String!) {\n  checkDomain(fqdn: $fqdn) {\n    valid\n    message\n  }\n}","name":"GraphQL request","locationOffset":{"line":1,"column":1}};
   
 
     var names = {};

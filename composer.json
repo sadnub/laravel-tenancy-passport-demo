@@ -12,7 +12,7 @@
         "laravel/framework": "5.7.*",
         "laravel/passport": "7.*",
         "laravel/tinker": "^1.0",
-        "nuwave/lighthouse": "^2.6"
+        "nuwave/lighthouse": "^3.0"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

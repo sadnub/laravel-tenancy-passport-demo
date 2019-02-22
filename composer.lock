@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "146fe0a738079dd146e019101e931501",
+    "content-hash": "45655e963f8e35f91cf6e5a670cfe52a",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -1946,16 +1946,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.2.0",
+            "version": "v4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a"
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
-                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/5221f49a608808c1e4d436df32884cbc1b821ac0",
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0",
                 "shasum": ""
             },
             "require": {
@@ -1993,20 +1993,20 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-01-12T16:31:37+00:00"
+            "time": "2019-02-16T20:54:15+00:00"
         },
         {
             "name": "nuwave/lighthouse",
-            "version": "v2.6.4",
+            "version": "v3.0-alpha.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nuwave/lighthouse.git",
-                "reference": "3834007cd3b4a7ea932f6c5363ab49f12d11e245"
+                "reference": "603fbce9e8ce35586880b6eec38e31cdb4a6652e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nuwave/lighthouse/zipball/3834007cd3b4a7ea932f6c5363ab49f12d11e245",
-                "reference": "3834007cd3b4a7ea932f6c5363ab49f12d11e245",
+                "url": "https://api.github.com/repos/nuwave/lighthouse/zipball/603fbce9e8ce35586880b6eec38e31cdb4a6652e",
+                "reference": "603fbce9e8ce35586880b6eec38e31cdb4a6652e",
                 "shasum": ""
             },
             "require": {
@@ -2018,15 +2018,15 @@
                 "illuminate/support": "5.5.*|5.6.*|5.7.*",
                 "illuminate/validation": "5.5.*|5.6.*|5.7.*",
                 "opis/closure": "^3.0",
-                "php": ">= 7.0",
-                "webonyx/graphql-php": "^0.12"
+                "php": ">= 7.1",
+                "webonyx/graphql-php": "^0.13"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.10",
                 "laravel/scout": "^4.0",
                 "mockery/mockery": "dev-master",
                 "orchestra/database": "3.5.*|3.6.*|3.7.*@dev",
-                "orchestra/testbench": "3.5.*|3.6.*|3.7.*"
+                "orchestra/testbench": "3.5.*|3.6.*|3.7.*",
+                "pusher/pusher-php-server": "^3.2"
             },
             "suggest": {
                 "mll-lab/laravel-graphql-playground": "GraphQL IDE for better development workflows - integrated with Laravel"
@@ -2067,7 +2067,7 @@
                 "laravel",
                 "laravel-graphql"
             ],
-            "time": "2019-01-22T07:07:54+00:00"
+            "time": "2019-01-06T11:55:45+00:00"
         },
         {
             "name": "opis/closure",
@@ -3995,24 +3995,30 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v0.12.6",
+            "version": "v0.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "4c545e5ec4fc37f6eb36c19f5a0e7feaf5979c95"
+                "reference": "9bb8e7327748fdc828f801001161e6b586ca96e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/4c545e5ec4fc37f6eb36c19f5a0e7feaf5979c95",
-                "reference": "4c545e5ec4fc37f6eb36c19f5a0e7feaf5979c95",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/9bb8e7327748fdc828f801001161e6b586ca96e5",
+                "reference": "9bb8e7327748fdc828f801001161e6b586ca96e5",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": ">=5.6"
+                "php": "^7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8",
+                "doctrine/coding-standard": "^5.0",
+                "phpbench/phpbench": "^0.14.0",
+                "phpstan/phpstan": "0.10.5",
+                "phpstan/phpstan-phpunit": "0.10.0",
+                "phpstan/phpstan-strict-rules": "0.10.1",
+                "phpunit/phpunit": "^7.2",
                 "psr/http-message": "^1.0",
                 "react/promise": "2.*"
             },
@@ -4036,7 +4042,7 @@
                 "api",
                 "graphql"
             ],
-            "time": "2018-09-02T14:59:54+00:00"
+            "time": "2018-11-27T10:23:58+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
@@ -5065,16 +5071,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.4",
+            "version": "7.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2896657da5fb237bc316bdfc18c2650efeee0dc0"
+                "reference": "09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2896657da5fb237bc316bdfc18c2650efeee0dc0",
-                "reference": "2896657da5fb237bc316bdfc18c2650efeee0dc0",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9",
+                "reference": "09c85e14994df92e5ff1f5ec0b481bdb7d3d3df9",
                 "shasum": ""
             },
             "require": {
@@ -5145,7 +5151,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-07T14:15:04+00:00"
+            "time": "2019-02-18T09:24:50+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

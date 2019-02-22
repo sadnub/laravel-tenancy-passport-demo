@@ -2,22 +2,14 @@
 
 namespace App\GraphQL\Resolvers;
 
-use Hyn\Tenancy\Repositories\HostnameRepository;
+use App\Tenant;
 use Log;
 
 class CheckDomainResolver {
     
     public function resolve($root, array $args) {
 
-        $hostname = app(HostnameRepository::class)->findByHostname($args['fqdn']);
-
-        Log::debug($hostname);
-
-        $valid = $hostname
-            ? 0 
-            : 1;
-
-        Log::debug($valid);
+        $valid = !Tenant::tenantExists($args['fqdn']);
 
         $message = $valid 
             ? "Domain is available!" 

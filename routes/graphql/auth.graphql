@@ -47,17 +47,17 @@ type RegisterResponse {
 }
 
 input RegisterInput {
-    name: String!
-    email: String!
-    fqdn: String!
-    password: String!
-    password_confirmation: String!
+    name: String @rules(apply: ["required"])
+    email: String @rules(apply: ["required"])
+    fqdn: String @rules(apply: ["required", "unique:system.hostnames,fqdn"])
+    password: String @rules(apply: ["required"])
+    password_confirmation: String @rules(apply: ["required"])
 }
 
 extend type Mutation {
-    login(data: LoginInput): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Login@resolve")
-    refreshToken(data: RefreshTokenInput): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
-    logout: LogoutResponse! @protect @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
+    login(data: LoginInput): Boolean!
+      @field(resolver: "App\\GraphQL\\Resolvers\\LoginResolver@resolve")
+    logout: LogoutResponse! @protect(guards: ["api"]) @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
     forgotPassword(data: ForgotPasswordInput!): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ForgotPassword@resolve")
     updateForgottenPassword(data: NewPasswordWithCodeInput): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPassword@resolve")
     register(data: RegisterInput!) : RegisterResponse! @field(resolver: "App\\GraphQL\\Resolvers\\RegisterResolver@resolve")

@@ -12,11 +12,11 @@ class RegisterResolver {
     
     public function resolve($root, array $args) {
 
-        event(new Registered($this->createTenant($args['input'])));
+        event(new Registered($this->createTenant($args['data'])));
 
         return [ 'status' => 'success',
            'message' => 'Registration was successful! Please use the below link to go to the login page',
-           'redirect' => 'http://' . $args['input']['fqdn'] . '/login'
+           'redirect' => 'http://' . $args['data']['fqdn'] . '/login'
           ];
     }
 
@@ -33,14 +33,13 @@ class RegisterResolver {
         app(Connection::class)->statement("SET GLOBAL validate_password_policy=LOW");
 
         //Create Tenant
-        $tenant = Tenant::createFrom($data['fqdn']);
+        $tenant = Tenant::create($data['fqdn']);
 
         //Create a new user object
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'active' => true
+            'password' => Hash::make($data['password'])
         ]);
 
         return $user;

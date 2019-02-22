@@ -1,26 +1,17 @@
 
 import {login, refresh, logout, register, checkDomain, updatePassword, forgotPassword} from '@/queries/auth.gql'
 import {Apollo} from '@/config/apollo.js'
+import Cookie from 'js-cookie'
 
 const Plugin = {
   install (Vue, options = {}) {
 
-    //Requires a mechanism to set a cookie using $cookie instance property
-    const Cookie = Vue.prototype.$cookie
-
     //Add $auth api methods
     Vue.prototype.$auth = {
 
-      //Holds cache for tokens
-      store: {
-        access_token: null,
-        expiresIn: null,
-        refresh_token: null
-      },
-
       //Checks if access token is present
       check() {
-        return this.store.access_token !== null
+        return Cookie.get('access_token') !== null
       },
 
       initiateAuth() {
@@ -80,17 +71,13 @@ const Plugin = {
             data: data
           }
         })
-        .then(({data: {login}}) => {
-          this.setTokens(login.refresh_token, login.access_token, login.expires_in)
-        })
       },
 
       //Logs the user out and clears local tokens
       logout() {
-        this.store.access_token = null
-        this.store.expiresIn = null
-        this.store.refresh_token = null
-        Cookie.delete('refresh_token')
+
+        Cookie.remove('refresh_token')
+        Cookie.remove('access_token')
 
         return Apollo.mutate({
           mutation: logout,
@@ -121,12 +108,8 @@ const Plugin = {
 
       //Checks for a cached refresh_token and then a cookie
       getRefreshToken() {
-        if (this.store.refresh_token !== null) {
-          return this.store.refresh_token
-        } else {
 
           return Cookie.get('refresh_token')
-        }
       },
 
       //Sets both access and refresh tokens in the cache and cookie
@@ -137,15 +120,13 @@ const Plugin = {
 
       //Sets access token in the cache
       setAccessToken(token, expires) {
-        this.store.access_token = token
-        this.store.expiresIn = expires
+        Cookie.set('access_token', token, {expires: expires})
       },
 
       //Sets refresh token in cache and cookie
       setRefreshToken(token) {
 
-        Cookie.set('refresh_token', token)
-        this.store.refresh_token = token
+        Cookie.set('refresh_token', token, {expires: 1})
       }
     }
   }

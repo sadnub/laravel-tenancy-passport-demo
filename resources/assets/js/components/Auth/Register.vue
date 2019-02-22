@@ -6,7 +6,7 @@
             <v-toolbar-title>Register</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form aria-label="Register">
+          <v-form @submit.prevent="validate" aria-label="Register">
               
             <v-layout row>
               <v-flex xs12>
@@ -83,6 +83,7 @@
             </v-layout>
                 
             <v-btn 
+              type="submit"
               @click="validate" 
               :loading="loading" 
               color="primary">Submit</v-btn>
@@ -126,7 +127,7 @@
         email: '',
         fqdn: '',
         password: '',
-        passsword_confirmation: ''
+        password_confirmation: ''
       },
 
       tenantUrl: '.app.itplog.com',
@@ -156,7 +157,7 @@
       },
       submit(){
 
-        const input = this.input
+        let input = Object.assign({}, this.input)
         input.fqdn += this.tenantUrl
 
         this.$auth.register(input).then(({data: {register}}) => {

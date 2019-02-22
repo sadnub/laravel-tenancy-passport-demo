@@ -1,10 +1,5 @@
 mutation login($data: LoginInput) {
-  login(data: $data) {
-    access_token
-    refresh_token
-    expires_in
-    token_type
-  }
+  login(data: $data)
 }
 
 mutation refresh($data: RefreshTokeninput) {
@@ -41,11 +36,9 @@ mutation updatePassword($data: NewPasswordWithCodeInput!) {
 
 mutation register($data: RegisterInput!) {
   register(data: $data) {
-    name
-    email
-    fqdn
-    password
-    password_confirmation
+    status
+    message
+    redirect
   }
 }
 

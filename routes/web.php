@@ -12,8 +12,8 @@
 */
 
 // Authentication Web Routes
-Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+//Route::post('login', 'Auth\LoginController@login');
+//Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Route everything else to Vue
 Route::get('{any?}', function () {

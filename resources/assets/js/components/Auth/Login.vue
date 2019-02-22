@@ -6,7 +6,7 @@
             <v-toolbar-title>Login</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <form @submit="validate" aria-label="Login">
+          <form @submit.prevent="validate" aria-label="Login">
             
             <v-layout row>
               <v-flex xs12>
@@ -55,11 +55,13 @@
         this.$validator.validateAll().then((result) => {
           if (result) {
             
-            this.$auth.login({email: this.email, password: this.password})
+            this.$auth.login({username: this.email, password: this.password})
             .then(response => {
-              this.$router.push({name: dashboard})
+              this.$router.push({name: 'dashboard'})
             })
             .catch(error => {
+
+              console.log({error})
               this.error = "Username or password is incorrect"
             })
           }

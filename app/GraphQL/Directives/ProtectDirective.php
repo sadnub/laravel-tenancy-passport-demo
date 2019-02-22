@@ -68,7 +68,9 @@ class ProtectDirective extends BaseDirective implements NodeManipulator, FieldMi
 
         return $next($value->setResolver(function ($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) use ($resolver) {
             
-            $this->authenticate($context->request, ['api', 'web']);
+            $guards = $this->directiveArgValue('guards', []);
+
+            $this->authenticate($context->request, $guards);
 
             return $resolver(
                     $root,
@@ -89,7 +91,8 @@ class ProtectDirective extends BaseDirective implements NodeManipulator, FieldMi
     public function manipulateSchema(Node $node, DocumentAST $documentAST): DocumentAST
     {
 
-        $node = $this->setAuthAPIDirectiveOnFields($node);
+        $args = $this->directiveArgValue('guards', []);
+        $node = $this->setProtectDirectiveOnFields($node, $args);
 
         $documentAST->setDefinition($node);
 
@@ -103,23 +106,27 @@ class ProtectDirective extends BaseDirective implements NodeManipulator, FieldMi
      *
      * @return ObjectTypeDefinitionNode|ObjectTypeExtensionNode
      */
-    protected function setAuthAPIDirectiveOnFields($objectType)
+    protected function setProtectDirectiveOnFields($objectType, array $args)
     {
        
         $objectType->fields = new NodeList(
             collect($objectType->fields)
-                ->map(function (FieldDefinitionNode $fieldDefinition) {
-                    $existingAuthAPIDirective = ASTHelper::directiveDefinition(
+                ->map(function (FieldDefinitionNode $fieldDefinition) use ($args) {
+                    $existingProtectDirective = ASTHelper::directiveDefinition(
                         $fieldDefinition,
                         $this->name()
                     );
 
-                    if ($existingAuthAPIDirective){
+                    if ($existingProtectDirective){
                         return $fieldDefinition;
 
-                    } else {
+                    } else {  
 
-                        $directive = PartialParser::directive("@protect");
+                        $protectArgValue = collect($args)->implode('", "');
+
+                        $directive = !empty($args)
+                            ? PartialParser::directive("@protect(guards: [\"$protectArgValue\"])")
+                            : PartialParser::directive("@protect");
 
                         $fieldDefinition->directives = $fieldDefinition->directives->merge([$directive]);
 
@@ -156,4 +163,5 @@ class ProtectDirective extends BaseDirective implements NodeManipulator, FieldMi
 
         throw new AuthenticationException("You are not authorized to view this resource");
     }
+
 }
