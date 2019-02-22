@@ -60,7 +60,7 @@
       methods: {
           logout() {
               this.$auth.logout().then(response => {
-                  this.$router.push({name: login})
+                  this.$router.push({name: 'auth.login'})
               })
           }
       }

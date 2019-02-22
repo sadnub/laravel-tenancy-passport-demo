@@ -23,15 +23,6 @@ class AppServiceProvider extends ServiceProvider
         //Force tenant connection for hostname if identified
         if ($fqdn = optional($env->hostname())->fqdn) {
             config(['database.default' => 'tenant']);
-
-            /*
-            //Gets the passport client that is configured during registration
-            $client = Client::find(2);
-
-            config([
-                'lighthouse-graphql-passport.client_id' => $client->id,
-                'lighthouse-graphql-passport.client_secret' => $client->secret
-              ]);*/
         }
 
     }

@@ -7,6 +7,8 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Laravel\Passport\Passport;
+
 class LoginResolver
 {
 
@@ -30,7 +32,7 @@ class LoginResolver
         if (! $context->request->hasCookie('_token')) {
             
             $token = Auth::user()->createToken('Access Token')->accessToken;
-            Cookie::queue('_token', $token, 60, '/', $context->request->getHost(), false, true);
+            Cookie::queue('_token', $token, Passport::personalAccessTokensExpireIn(), '/', $context->request->getHost(), false, true);
 
         }
 

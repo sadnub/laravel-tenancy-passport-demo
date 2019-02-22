@@ -20,7 +20,6 @@ class AddAuthHeader
         if (! $request->bearerToken()) {
             if ($token = $request->cookie('_token')) {
               $request->headers->add(['Authorization' => 'Bearer '.$token]);
-              Log::debug($request->cookie('_token'));
 
             }
         }

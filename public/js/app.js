@@ -3524,7 +3524,7 @@ var ApolloError = (function (_super) {
 /*!*********************************************!*\
   !*** ./node_modules/apollo-client/index.js ***!
   \*********************************************/
-/*! exports provided: ObservableQuery, NetworkStatus, isApolloError, ApolloError, ApolloClient, default, FetchType */
+/*! exports provided: ObservableQuery, NetworkStatus, FetchType, isApolloError, ApolloError, ApolloClient, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8056,7 +8056,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.loading = false;
         _this2.show = true;
 
-        if (data.status === 'success') {
+        if (updateForgottenPassword.status === 'success') {
           _this2.text = 'Redirecting to Login Page...';
           _this2.loading = true;
           setTimeout(function () {
@@ -8192,7 +8192,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$auth.logout().then(function (response) {
         _this.$router.push({
-          name: login
+          name: 'auth.login'
         });
       });
     }
@@ -9854,186 +9854,6 @@ function isBuffer (obj) {
 function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
-
-
-/***/ }),
-
-/***/ "./node_modules/js-cookie/src/js.cookie.js":
-/*!*************************************************!*\
-  !*** ./node_modules/js-cookie/src/js.cookie.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * JavaScript Cookie v2.2.0
- * https://github.com/js-cookie/js-cookie
- *
- * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
- * Released under the MIT license
- */
-;(function (factory) {
-	var registeredInModuleLoader = false;
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		registeredInModuleLoader = true;
-	}
-	if (true) {
-		module.exports = factory();
-		registeredInModuleLoader = true;
-	}
-	if (!registeredInModuleLoader) {
-		var OldCookies = window.Cookies;
-		var api = window.Cookies = factory();
-		api.noConflict = function () {
-			window.Cookies = OldCookies;
-			return api;
-		};
-	}
-}(function () {
-	function extend () {
-		var i = 0;
-		var result = {};
-		for (; i < arguments.length; i++) {
-			var attributes = arguments[ i ];
-			for (var key in attributes) {
-				result[key] = attributes[key];
-			}
-		}
-		return result;
-	}
-
-	function init (converter) {
-		function api (key, value, attributes) {
-			var result;
-			if (typeof document === 'undefined') {
-				return;
-			}
-
-			// Write
-
-			if (arguments.length > 1) {
-				attributes = extend({
-					path: '/'
-				}, api.defaults, attributes);
-
-				if (typeof attributes.expires === 'number') {
-					var expires = new Date();
-					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
-					attributes.expires = expires;
-				}
-
-				// We're using "expires" because "max-age" is not supported by IE
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-				try {
-					result = JSON.stringify(value);
-					if (/^[\{\[]/.test(result)) {
-						value = result;
-					}
-				} catch (e) {}
-
-				if (!converter.write) {
-					value = encodeURIComponent(String(value))
-						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-				} else {
-					value = converter.write(value, key);
-				}
-
-				key = encodeURIComponent(String(key));
-				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
-				key = key.replace(/[\(\)]/g, escape);
-
-				var stringifiedAttributes = '';
-
-				for (var attributeName in attributes) {
-					if (!attributes[attributeName]) {
-						continue;
-					}
-					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
-						continue;
-					}
-					stringifiedAttributes += '=' + attributes[attributeName];
-				}
-				return (document.cookie = key + '=' + value + stringifiedAttributes);
-			}
-
-			// Read
-
-			if (!key) {
-				result = {};
-			}
-
-			// To prevent the for loop in the first place assign an empty array
-			// in case there are no cookies at all. Also prevents odd result when
-			// calling "get()"
-			var cookies = document.cookie ? document.cookie.split('; ') : [];
-			var rdecode = /(%[0-9A-Z]{2})+/g;
-			var i = 0;
-
-			for (; i < cookies.length; i++) {
-				var parts = cookies[i].split('=');
-				var cookie = parts.slice(1).join('=');
-
-				if (!this.json && cookie.charAt(0) === '"') {
-					cookie = cookie.slice(1, -1);
-				}
-
-				try {
-					var name = parts[0].replace(rdecode, decodeURIComponent);
-					cookie = converter.read ?
-						converter.read(cookie, name) : converter(cookie, name) ||
-						cookie.replace(rdecode, decodeURIComponent);
-
-					if (this.json) {
-						try {
-							cookie = JSON.parse(cookie);
-						} catch (e) {}
-					}
-
-					if (key === name) {
-						result = cookie;
-						break;
-					}
-
-					if (!key) {
-						result[name] = cookie;
-					}
-				} catch (e) {}
-			}
-
-			return result;
-		}
-
-		api.set = api;
-		api.get = function (key) {
-			return api.call(api, key);
-		};
-		api.getJSON = function () {
-			return api.apply({
-				json: true
-			}, [].slice.call(arguments));
-		};
-		api.defaults = {};
-
-		api.remove = function (key, attributes) {
-			api(key, '', extend(attributes, {
-				expires: -1
-			}));
-		};
-
-		api.withConverter = init;
-
-		return api;
-	}
-
-	return init(function () {});
-}));
 
 
 /***/ }),
@@ -66633,12 +66453,13 @@ var httpLink = new apollo_link_http__WEBPACK_IMPORTED_MODULE_1__["HttpLink"]({
 var errorLink = Object(apollo_link_error__WEBPACK_IMPORTED_MODULE_3__["onError"])(function (_ref) {
   var graphQLErrors = _ref.graphQLErrors,
       networkError = _ref.networkError;
-  if (graphQLErrors) graphQLErrors.map(function (_ref2) {
-    var message = _ref2.message,
-        locations = _ref2.locations,
-        path = _ref2.path;
-    return console.log("[GraphQL error]: Message: ".concat(message, ", Location: ").concat(locations, ", Path: ").concat(path));
-  });
+  if (graphQLErrors) if (graphQLErrors[0]) {
+    if (graphQLErrors[0].extensions.category === 'authentication') {
+      _app_js__WEBPACK_IMPORTED_MODULE_6__["vm"].$router.push({
+        name: 'auth.login'
+      });
+    }
+  }
   if (networkError) console.log("[Network error]: ".concat(networkError));
 }); //Combines the Apollo Http and Error links
 
@@ -66717,10 +66538,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/queries/auth.gql */ "./resources/assets/js/queries/auth.gql");
 /* harmony import */ var _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/config/apollo.js */ "./resources/assets/js/config/apollo.js");
-/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
-/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(js_cookie__WEBPACK_IMPORTED_MODULE_2__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 
@@ -66731,20 +66549,10 @@ var Plugin = {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     //Add $auth api methods
     Vue.prototype.$auth = (_Vue$prototype$$auth = {
-      //Checks if access token is present
       check: function check() {
-        return js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('access_token') !== null;
-      },
-      initiateAuth: function initiateAuth() {
-        var refresh_token = this.getRefreshToken();
-
-        if (refresh_token != null) {
-          this.refresh().then(function (response) {
-            return true;
-          });
-        } else {
-          return false;
-        }
+        return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
+          mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["check"]
+        });
       },
       register: function register(data) {
         return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
@@ -66785,44 +66593,8 @@ var Plugin = {
         }
       });
     }), _defineProperty(_Vue$prototype$$auth, "logout", function logout() {
-      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.remove('refresh_token');
-      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.remove('access_token');
       return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
         mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["logout"]
-      });
-    }), _defineProperty(_Vue$prototype$$auth, "refresh", function refresh() {
-      var _this = this;
-
-      var refresh_token = this.getRefreshToken();
-
-      if (refresh_token === null) {
-        return null;
-      }
-
-      return _config_apollo_js__WEBPACK_IMPORTED_MODULE_1__["Apollo"].mutate({
-        mutation: _queries_auth_gql__WEBPACK_IMPORTED_MODULE_0__["refresh"],
-        variables: {
-          data: {
-            refresh_token: refresh_token
-          }
-        }
-      }).then(function (_ref) {
-        var refresh_token = _ref.data.refresh_token;
-
-        _this.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in);
-      });
-    }), _defineProperty(_Vue$prototype$$auth, "getRefreshToken", function getRefreshToken() {
-      return js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get('refresh_token');
-    }), _defineProperty(_Vue$prototype$$auth, "setTokens", function setTokens(refresh, access, expires) {
-      this.setAccessToken(access, expires);
-      this.setRefreshToken(refresh);
-    }), _defineProperty(_Vue$prototype$$auth, "setAccessToken", function setAccessToken(token, expires) {
-      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('access_token', token, {
-        expires: expires
-      });
-    }), _defineProperty(_Vue$prototype$$auth, "setRefreshToken", function setRefreshToken(token) {
-      js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.set('refresh_token', token, {
-        expires: 1
       });
     }), _Vue$prototype$$auth);
   }

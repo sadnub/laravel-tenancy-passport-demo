@@ -1,7 +1,6 @@
 
-import {login, refresh, logout, register, checkDomain, updatePassword, forgotPassword} from '@/queries/auth.gql'
+import {login, refresh, logout, register, checkDomain, updatePassword, forgotPassword, check} from '@/queries/auth.gql'
 import {Apollo} from '@/config/apollo.js'
-import Cookie from 'js-cookie'
 
 const Plugin = {
   install (Vue, options = {}) {
@@ -9,24 +8,11 @@ const Plugin = {
     //Add $auth api methods
     Vue.prototype.$auth = {
 
-      //Checks if access token is present
       check() {
-        return Cookie.get('access_token') !== null
+        return Apollo.mutate({
+          mutation: check
+        })
       },
-
-      initiateAuth() {
-        const refresh_token = this.getRefreshToken()
-
-        if (refresh_token != null) {
-          this.refresh().then(response => {
-            return true
-          })
-
-        } else {
-          return false
-        }
-      },
-
       register(data) {
         return Apollo.mutate({
           mutation: register,
@@ -76,58 +62,11 @@ const Plugin = {
       //Logs the user out and clears local tokens
       logout() {
 
-        Cookie.remove('refresh_token')
-        Cookie.remove('access_token')
-
         return Apollo.mutate({
           mutation: logout,
         })
 
       },
-
-      //Uses a valid refresh token to obtain an access token
-      refresh() {
-        const refresh_token = this.getRefreshToken()
-
-        if (refresh_token === null) {
-          return null
-        }
-
-        return Apollo.mutate({
-          mutation: refresh,
-          variables: {
-            data: {
-              refresh_token: refresh_token
-            }
-          }
-        })
-        .then(({data: {refresh_token}}) => {
-          this.setTokens(refresh_token.refresh_token, refresh_token.access_token, refresh_token.expires_in)
-        })
-      },
-
-      //Checks for a cached refresh_token and then a cookie
-      getRefreshToken() {
-
-          return Cookie.get('refresh_token')
-      },
-
-      //Sets both access and refresh tokens in the cache and cookie
-      setTokens(refresh, access, expires) {
-        this.setAccessToken(access, expires)
-        this.setRefreshToken(refresh)
-      },
-
-      //Sets access token in the cache
-      setAccessToken(token, expires) {
-        Cookie.set('access_token', token, {expires: expires})
-      },
-
-      //Sets refresh token in cache and cookie
-      setRefreshToken(token) {
-
-        Cookie.set('refresh_token', token, {expires: 1})
-      }
     }
   }
 }

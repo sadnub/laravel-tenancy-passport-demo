@@ -121,7 +121,7 @@
           this.loading = false
           this.show = true
 
-          if (data.status === 'success'){
+          if (updateForgottenPassword.status === 'success'){
 
             this.text = 'Redirecting to Login Page...'
             this.loading = true

@@ -20,13 +20,16 @@ const httpLink = new HttpLink({
 //Sets a global error handler using the Apollo Error Link
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
-    graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
-    );
-  if (networkError) console.log(`[Network error]: ${networkError}`);
-});
+
+    if (graphQLErrors[0]) {
+
+      if (graphQLErrors[0].extensions.category === 'authentication') {
+        vm.$router.push({name: 'auth.login'})
+      }
+    }
+
+  if (networkError) console.log(`[Network error]: ${networkError}`)
+})
 
 //Combines the Apollo Http and Error links
 const link = ApolloLink.from([
